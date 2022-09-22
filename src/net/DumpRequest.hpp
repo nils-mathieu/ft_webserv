@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:50:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 20:09:25 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/22 22:32:59 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ namespace ws
 {
     class DumpRequest : public Connection
     {
+        bool    _got_one_byte;
+
     public:
         DumpRequest(int raw_fd);
 
@@ -25,6 +27,7 @@ namespace ws
         //  Implementation of the `Connection` interaface.
         // ==============================================
 
-        bool    read_more(void* data, Connection::ReadFn read_fn);
+        bool    can_read_more();
+        bool    can_send_more();
     };
 }

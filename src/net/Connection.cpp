@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:37:41 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 20:41:31 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/22 22:39:51 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,6 @@
 
 namespace ws
 {
-    struct read_data
-    {
-        int     fd;
-        bool    is_done;
-    };
-
-    static size_t data_read_fn(void* d, uint8_t* buf, size_t size)
-    {
-        read_data* data = (read_data*)d;
-
-        ssize_t count = read(data->fd, buf, size);
-
-        if (count <= -1)
-            throw ft::OsException("failed to read data from socket");
-
-        data->is_done = (count == 0);
-
-        return (count);
-    }
-
     Connection::Connection(int raw_fd) :
         _fd(raw_fd)
     {}
@@ -56,6 +36,7 @@ namespace ws
     {
         return
             PollTypes::In
+            | PollTypes::Out
             | PollTypes::HangedUp
             | PollTypes::Exceptional
             | PollTypes::Error;
@@ -63,14 +44,39 @@ namespace ws
 
     bool Connection::poll(PollTypes types)
     {
-        if ((types & PollTypes::In) == 0)
-            return false;
+        if ((types & PollTypes::In) != 0)
+        {
+            // New data is available for reading!
+            return this->can_read_more();
+        }
+        else if ((types & PollTypes::Out) != 0)
+        {
+            // Data can be sent!
+            return this->can_send_more();
+        }
+        else
+        {
+            return (false);
+        }
+    }
 
-        read_data   data;
-        data.fd = this->_fd;
+    size_t Connection::read_some(uint8_t* buf, size_t size)
+    {
+        ssize_t count = read(this->_fd, buf, size);
 
-        this->read_more(&data, data_read_fn);
+        if (count <= -1)
+            throw ft::OsException("failed to read data from socket");
 
-        return data.is_done;
+        return (count);
+    }
+
+    size_t Connection::send_some(const uint8_t* data, size_t count)
+    {
+        ssize_t ret = write(this->_fd, data, count);
+
+        if (ret <= -1)
+            throw ft::OsException("failed to send data to socket");
+
+        return (ret);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:36:02 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 20:02:56 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/22 22:33:41 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,42 @@ namespace ws
         bool            poll(PollTypes types);
 
     protected:
+        // ============================
+        //  sending and recieving data
+        // ============================
+
+        /// @brief Sends some bytes.
+        ///
+        /// @details This function should only be called within the
+        /// `call_send_more` callback function.
+        ///
+        /// @param data A pointer to the bytes that are to be sent.
+        /// @param count The number of bytes to send.
+        ///
+        /// @return The number of bytes that were sent.
+        size_t          send_some(const uint8_t* data, size_t count);
+
+        /// @brief Reads some bytes
+        ///
+        /// @param buf The buffer that is to store available data.
+        /// @param count The size of the buffer.
+        ///
+        /// @return The number of bytes that were read.
+        size_t          read_some(uint8_t* buf, size_t count);
+
+    protected:
         // ======================
         //  virtual pure methods
         // ======================
 
-        /// @brief A function that may be used to read some data.
-        typedef size_t      (*ReadFn)(void* data, uint8_t* buf, size_t size);
-
         /// @brief Indicates that more data is available for reading.
         ///
-        /// @param data A pointer to some opaque data required by the `read_fn`
-        /// function.
-        /// @param read_fn A function that should be called *once* to get
-        /// some data out of the open connection.
+        /// @returns Whether the connection can be closed.
+        virtual bool    can_read_more() = 0;
+
+        /// @brief Indicates that data can be sent through this connection.
         ///
-        /// @returns Whether the connection can be closed (even though it has
-        /// not been completely exhausted).
-        virtual bool    read_more(void* data, ReadFn read_fn) = 0;
+        /// @return Whether the connection can be closed.
+        virtual bool    can_send_more() = 0;
     };
 }
