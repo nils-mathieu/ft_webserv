@@ -6,10 +6,11 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 17:03:22 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 20:37:26 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:43:07 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft/sigint.hpp"
 #include "ft/OsException.hpp"
 #include "AsyncExecutor.hpp"
 
@@ -72,6 +73,9 @@ namespace ws
         // =============================================================
 
         int count = epoll_wait(this->_epoll, evs, 32, timeout);
+
+        if (ft::interrupted())
+            return (true);
 
         if (count <= -1)
             throw ft::OsException("failed to wait on `Pollable` instances");

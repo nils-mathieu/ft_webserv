@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:52:01 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 20:30:41 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:43:59 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ namespace ws
 
     bool DumpRequest::read_more(void* data, Connection::ReadFn read_fn)
     {
-        uint8_t buf[1024];
-        size_t count = read_fn(data, buf, 1024);
+        uint8_t buf[128];
+        size_t count = read_fn(data, buf, sizeof(buf));
 
         if (count == 0)
             return (true);

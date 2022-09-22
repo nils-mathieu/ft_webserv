@@ -6,10 +6,11 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 20:41:32 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:43:14 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft/sigint.hpp"
 #include "net/DumpRequest.hpp"
 #include "async/AsyncExecutor.hpp"
 #include "net/Socket.hpp"
@@ -21,12 +22,14 @@ int main(void)
 {
     try
     {
+        ft::setup_interrupted();
+
         ws::AsyncExecutor   executor;
         ws::SpawnConnection<ws::DumpRequest> responder(executor);
         executor.append(new ws::Socket(ws::SocketAddress(127, 0, 0, 1, 8010), responder));
         executor.append(new ws::Socket(ws::SocketAddress(127, 0, 0, 1, 8011), responder));
 
-        for (int i = 0; i < 10; i++)
+        while (!ft::interrupted())
         {
             if (!executor.poll_some(-1))
                 std::cerr << "timed out" << std::endl;
