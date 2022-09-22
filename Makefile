@@ -6,13 +6,13 @@
 #    By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/21 12:03:12 by nmathieu          #+#    #+#              #
-#    Updated: 2022/09/21 22:07:45 by nmathieu         ###   ########.fr        #
+#    Updated: 2022/09/22 16:07:38 by nmathieu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME      := webserv
 CXX       := c++
-CXXFLAGS  := -Wall -Wextra -Werror -std=c++98 -MMD -I src -g3
+CXXFLAGS  := -Wall -Wextra -Werror -std=c++98 -MMD -I src -g3 -D DEBUG
 LINKFLAGS :=
 
 SRC_DIR   := src
