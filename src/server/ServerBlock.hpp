@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:46:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 14:08:03 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 23:49:28 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ namespace ws
     class ServerBlock : public Scope
     {
     public:
+        /// @brief A label for this server block.
+        ft::Str                 label;
         /// @brief The address that this server block is listening for.
         SocketAddress           address;
         /// @brief The hosts allowed for this server.

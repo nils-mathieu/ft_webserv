@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 16:30:31 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 22:37:23 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 23:46:06 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,22 @@ namespace ws
         memcpy(&ret.sin_addr, this->address, 4);
 
         return (ret);
+    }
+
+    bool SocketAddress::operator==(const SocketAddress& other) const
+    {
+        return (
+            this->address[0] == other.address[0]
+            && this->address[1] == other.address[1]
+            && this->address[2] == other.address[2]
+            && this->address[3] == other.address[3]
+            && this->port == other.port
+        );
+    }
+
+    bool SocketAddress::operator!=(const SocketAddress& other) const
+    {
+        return !(*this == other);
     }
 
     std::ostream& operator<<(std::ostream& s, const SocketAddress& address)

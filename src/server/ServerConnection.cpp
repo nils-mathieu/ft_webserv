@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 22:39:57 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 00:09:37 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,12 @@ namespace ws
 
     void ServerConnection::parsed_invalid_http()
     {
-        ft::log::info() << "    💣 packet is not valid HTTP" << std::endl;
+        ft::log::info()
+            << "    💣 "
+            << ft::log::Color::Red
+            << "packet is not valid HTTP"
+            << ft::log::Color::Reset
+            << std::endl;
     }
 
     Connection::Flow ServerConnection::parsed_method(Method method)
@@ -52,9 +57,13 @@ namespace ws
         if (http_version != "HTTP/1.1")
         {
             ft::log::info()
-                << "    💣 HTTP version is '"
+                << "    💣 "
+                << ft::log::Color::Red
+                << "HTTP version is '"
                 << http_version
-                << "'" << std::endl;
+                << "'"
+                << ft::log::Color::Reset
+                << std::endl;
             return Connection::Close;
         }
         else
@@ -84,6 +93,27 @@ namespace ws
             << ft::log::Color::Dim
             << this->_header.host
             << ft::log::Color::Reset
+            << std::endl;
+
+        const ServerBlock* server_block = this->_config.get_server_block(this->_address, ft::make_str(this->_header.host.data(), this->_header.host.size()));
+
+        if (!server_block)
+        {
+            ft::log::info()
+                << "   💣 "
+                << ft::log::Color::Red
+                << "no server for this request"
+                << ft::log::Color::Reset
+                << std::endl;
+            return (Connection::Close);
+        }
+
+        ft::log::trace()
+            << "      selected server "
+            << ft::log::Color::Yellow
+            << server_block->label
+            << ft::log::Color::Reset
+            << " to serve this request"
             << std::endl;
 
         return (Connection::Close);

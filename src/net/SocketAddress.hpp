@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 16:27:27 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 22:02:10 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 23:46:11 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ namespace ws
         /// @brief Creates an instance of `struct sockaddr_in` from this
         /// @c SocketAddress instance.
         struct sockaddr_in sockaddr_in() const;
+
+        bool operator==(const SocketAddress& other)const ;
+        bool operator!=(const SocketAddress& other)const ;
     };
 
     std::ostream& operator<<(std::ostream& s, const SocketAddress& address);

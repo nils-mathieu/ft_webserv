@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:44:15 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 02:36:19 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 23:06:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ namespace ws
         const char* name() const;
 
         bool operator==(Method other);
+        bool operator!=(Method other);
     };
 
     std::ostream& operator<<(std::ostream& s, Method other);
