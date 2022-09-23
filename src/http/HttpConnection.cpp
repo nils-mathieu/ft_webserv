@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:59 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:37:20 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:48:05 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ namespace ws
         _colon_position(0)
     {}
 
-    static bool is_a_literal_slice(const uint8_t& c)
+    static bool is_a_literal_space(const uint8_t& c)
     {
         return (c == ' ');
     }
@@ -82,7 +82,7 @@ namespace ws
         this->_data.assume_filled(2);
     }
 
-    bool HttpConnection::can_read_more()
+    Connection::Flow HttpConnection::can_read_more()
     {
         // ====================================================
         //  1. try to read at least 512 bytes from the socket
@@ -143,13 +143,13 @@ namespace ws
                         stop_requested = this->parsed_invalid_http();
 
                     if (stop_requested)
-                        return (this->start_response(), false);
+                        return (this->start_response(), Connection::Close);
                     else
                         break;
                 }
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -174,7 +174,7 @@ namespace ws
                 }
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -199,13 +199,13 @@ namespace ws
                     i = 0;
 
                     if (this->parsed_uri(uri))
-                        return (this->start_response(), false);
+                        return (this->start_response(), Connection::Close);
                     else
                         break;
                 }
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -229,7 +229,7 @@ namespace ws
                 }
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -253,13 +253,13 @@ namespace ws
                     i = 0;
 
                     if (this->parsed_http_version(http_version))
-                        return (this->start_response(), false);
+                        return (this->start_response(), Connection::Close);
                     else
                         break;
                 }
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -271,22 +271,38 @@ namespace ws
             if (this->_state == 5)
             {
                 if (i >= available)
-                    return (true);
+                    return (Connection::Continue);
 
                 if (i == 0)
                 {
                     if (this->_data[0] != '\r')
-                        return (!this->parsed_invalid_http() || (this->start_response(), false));
+                    {
+                        if (this->parsed_invalid_http() == Connection::Close)
+                        {
+                            this->start_response();
+                            return (Connection::Close);
+                        }
+                        else
+                            return (Connection::Continue);
+                    }
                     ++i;
                 }
 
                 if (i >= available)
-                    return (true);
+                    return (Connection::Continue);
 
                 if (i == 1)
                 {
                     if (this->_data[1] != '\n')
-                        return (!this->parsed_invalid_http() || (this->start_response(), false));
+                    {
+                        if (this->parsed_invalid_http() == Connection::Close)
+                        {
+                            this->start_response();
+                            return (Connection::Close);
+                        }
+                        else
+                            return (Connection::Continue);
+                    }
                     ++i;
                 }
 
@@ -296,7 +312,7 @@ namespace ws
                 i = 0;
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -310,7 +326,7 @@ namespace ws
                 // If the first character is a `\r`, then this is probably the end
                 // of the header.
                 if (i >= available)
-                    return (this->start_response(), false);
+                    return (this->start_response(), Connection::Close);
 
                 if (i == 0 && this->_data[0] == '\r')
                 {
@@ -332,7 +348,7 @@ namespace ws
                 }
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -348,8 +364,8 @@ namespace ws
                     if (this->_data[i] != '\r')
                         continue;
 
-                    ft::Str key = this->_data.slice(0, this->_colon_position).trim(is_a_literal_slice);
-                    ft::Str value = this->_data.slice(this->_colon_position + 1, i).trim(is_a_literal_slice);
+                    ft::Str key = this->_data.slice(0, this->_colon_position).trim(is_a_literal_space);
+                    ft::Str value = this->_data.slice(this->_colon_position + 1, i).trim(is_a_literal_space);
 
                     this->_state = 8;
                     this->_data.consume(i);
@@ -357,13 +373,13 @@ namespace ws
                     i = 0;
 
                     if (this->parsed_header_field(key, value))
-                        return (this->start_response(), false);
+                        return (this->start_response(), Connection::Close);
                     else
                         break;
                 }
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -375,22 +391,38 @@ namespace ws
             if (this->_state == 8)
             {
                 if (i >= available)
-                    return (true);
+                    return (Connection::Continue);
 
                 if (i == 0)
                 {
                     if (this->_data[0] != '\r')
-                        return (!this->parsed_invalid_http() || (this->start_response(), false));
+                    {
+                        if (this->parsed_invalid_http() == Connection::Close)
+                        {
+                            this->start_response();
+                            return (Connection::Close);
+                        }
+                        else
+                            return (Connection::Continue);
+                    }
                     ++i;
                 }
 
                 if (i >= available)
-                    return (true);
+                    return (Connection::Continue);
 
                 if (i == 1)
                 {
                     if (this->_data[1] != '\n')
-                        return (!this->parsed_invalid_http() || (this->start_response(), false));
+                    {
+                        if (this->parsed_invalid_http() == Connection::Close)
+                        {
+                            this->start_response();
+                            return (Connection::Close);
+                        }
+                        else
+                            return (Connection::Continue);
+                    }
                     ++i;
                 }
 
@@ -400,7 +432,7 @@ namespace ws
                 i = 0;
 
                 if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -412,22 +444,38 @@ namespace ws
             if (this->_state == 9)
             {
                 if (i >= available)
-                    return (true);
+                    return (Connection::Continue);
 
                 if (i == 0)
                 {
                     if (this->_data[0] != '\r')
-                        return (!this->parsed_invalid_http() || (this->start_response(), false));
+                    {
+                        if (this->parsed_invalid_http() == Connection::Close)
+                        {
+                            this->start_response();
+                            return (Connection::Close);
+                        }
+                        else
+                            return (Connection::Continue);
+                    }
                     ++i;
                 }
 
                 if (i >= available)
-                    return (true);
+                    return (Connection::Continue);
 
                 if (i == 1)
                 {
                     if (this->_data[1] != '\n')
-                        return (!this->parsed_invalid_http() || (this->start_response(), false));
+                    {
+                        if (this->parsed_invalid_http() == Connection::Close)
+                        {
+                            this->start_response();
+                            return (Connection::Close);
+                        }
+                        else
+                            return (Connection::Continue);
+                    }
                     ++i;
                 }
 
@@ -437,9 +485,9 @@ namespace ws
                 i = 0;
 
                 if (this->parsed_header())
-                    return (this->start_response(), false);
+                    return (this->start_response(), Connection::Close);
                 else if (i == available)
-                    return (true);
+                    return (Connection::Continue);
                 else
                     continue;
             }
@@ -455,14 +503,20 @@ namespace ws
                 this->_data.consume(available);
                 available = 0;
 
-                return (!this->recieved_more_body(body_part) || (this->start_response(), false));
+                if (this->recieved_more_body(body_part) == Connection::Close)
+                {
+                    this->start_response();
+                    return (Connection::Close);
+                }
+                else
+                    return (Connection::Continue);
             }
         }
 
-        return (true);
+        return (Connection::Continue);
     }
 
-    bool HttpConnection::can_send_more()
+    Connection::Flow HttpConnection::can_send_more()
     {
         if (this->_state == 11)
         {
@@ -475,7 +529,7 @@ namespace ws
 
             if (this->_data.available() == 0)
                 this->_state = 12;
-            return (true);
+            return (Connection::Continue);
         }
 
         if (this->_state == 12)
@@ -484,9 +538,9 @@ namespace ws
             //  Sending The Body
             // ==================
 
-            return (!this->send_more_body());
+            return (this->send_more_body());
         }
 
-        return (true);
+        return (Connection::Continue);
     }
 }

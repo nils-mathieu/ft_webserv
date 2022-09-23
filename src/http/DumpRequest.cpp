@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:52:01 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:32:04 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:46:46 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,38 +21,38 @@ namespace ws
         _size(0)
     {}
 
-    bool DumpRequest::parsed_invalid_http()
+    Connection::Flow DumpRequest::parsed_invalid_http()
     {
         std::cout << "found invalid HTTP in the request" << std::endl;
-        return (true);
+        return (Connection::Close);
     }
 
-    bool DumpRequest::parsed_method(Method method)
+    Connection::Flow DumpRequest::parsed_method(Method method)
     {
         std::cout << "Method: " << method << std::endl;
-        return (false);
+        return (Connection::Continue);
     }
 
-    bool DumpRequest::parsed_uri(ft::Str uri)
+    Connection::Flow DumpRequest::parsed_uri(ft::Str uri)
     {
         std::cout << "URI: " << uri << std::endl;
-        return (false);
+        return (Connection::Continue);
     }
 
-    bool DumpRequest::parsed_http_version(ft::Str http_version)
+    Connection::Flow DumpRequest::parsed_http_version(ft::Str http_version)
     {
         std::cout << "HTTP Version: " << http_version << std::endl;
 
         if (http_version != "HTTP/1.1")
         {
             std::cout << "unsupported HTTP version, aborting...";
-            return (true);
+            return (Connection::Close);
         }
 
-        return (false);
+        return (Connection::Continue);
     }
 
-    bool DumpRequest::parsed_header_field(ft::Str key, ft::Str value)
+    Connection::Flow DumpRequest::parsed_header_field(ft::Str key, ft::Str value)
     {
         std::cout << "| " << key << ": " << value << std::endl;
 
@@ -64,30 +64,33 @@ namespace ws
                 this->_size = 0;
         }
 
-        return (false);
+        return (Connection::Continue);
     }
 
-    bool DumpRequest::parsed_header()
+    Connection::Flow DumpRequest::parsed_header()
     {
         if (this->_size == 0)
         {
             std::cout << "No Body" << std::endl;
-            return (true);
+            return (Connection::Close);
         }
         else
         {
             std::cout << std::endl;
-            return (false);
+            return (Connection::Continue);
         }
     }
 
-    bool DumpRequest::recieved_more_body(ft::Str body_part)
+    Connection::Flow DumpRequest::recieved_more_body(ft::Str body_part)
     {
         if (body_part.size() >= this->_size)
             body_part = body_part.slice(0, this->_size);
         this->_size -= body_part.size();
         std::cout << body_part << std::endl;
-        return (this->_size == 0);
+        if (this->_size == 0)
+            return (Connection::Close);
+        else
+            return (Connection::Continue);
     }
 
     StatusCode DumpRequest::send_status_code()
@@ -102,8 +105,8 @@ namespace ws
         return false;
     }
 
-    bool DumpRequest::send_more_body()
+    Connection::Flow DumpRequest::send_more_body()
     {
-        return true;
+        return Connection::Close;
     }
 }

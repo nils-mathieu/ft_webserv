@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:37:41 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:35:17 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:48:48 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ namespace ws
         if ((types & PollTypes::In) != 0 && !this->_reading_done)
         {
             // New data is available for reading!
-            if (!this->can_read_more())
+            if (this->can_read_more() == Connection::Close)
                 this->_reading_done = true;
         }
         if ((types & PollTypes::Out) != 0 && !this->_writing_done)
         {
             // Data can be sent!
-            if (!this->can_send_more())
+            if (this->can_send_more() == Connection::Close)
                 this->_writing_done = true;
         }
         if ((types & PollTypes::HangedUp) != 0)

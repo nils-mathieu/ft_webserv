@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:40:31 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 03:54:57 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:39:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ namespace ws
         //  Implementation of the `Connection` interaface.
         // ==============================================
 
-        bool    can_read_more();
-        bool    can_send_more();
+        Connection::Flow    can_read_more();
+        Connection::Flow    can_send_more();
 
     protected:
         // ===========
@@ -94,7 +94,7 @@ namespace ws
         /// @brief Indicates that invalid HTTP was found in the request.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual bool    parsed_invalid_http() = 0;
+        virtual Connection::Flow    parsed_invalid_http() = 0;
 
         /// @brief Indicates that the method of the HTTP request has been
         /// parsed.
@@ -102,14 +102,14 @@ namespace ws
         /// @param status The parsed method.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual bool    parsed_method(Method method) = 0;
+        virtual Connection::Flow    parsed_method(Method method) = 0;
 
         /// @brief Indicates that the URI of the HTTP request has been parsed.
         ///
         /// @param uri The parsed URI.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual bool    parsed_uri(ft::Str uri) = 0;
+        virtual Connection::Flow    parsed_uri(ft::Str uri) = 0;
 
         /// @brief Indicates that the HTTP version of the request has been
         /// parsed.
@@ -117,7 +117,7 @@ namespace ws
         /// @param http_version The parsed HTTP version.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual bool    parsed_http_version(ft::Str http_version) = 0;
+        virtual Connection::Flow    parsed_http_version(ft::Str http_version) = 0;
 
         /// @brief Indicates that a new header field has been parsed.
         ///
@@ -125,33 +125,33 @@ namespace ws
         /// @param value The value of the key-value pair.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual bool    parsed_header_field(ft::Str key, ft::Str value) = 0;
+        virtual Connection::Flow    parsed_header_field(ft::Str key, ft::Str value) = 0;
 
         /// @brief Indicates that the header has been completely parsed.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual bool    parsed_header() = 0;
+        virtual Connection::Flow    parsed_header() = 0;
 
         /// @brief More of the body has been recieved.
         ///
         /// @param body_part A slice of the body that has been parsed.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual bool    recieved_more_body(ft::Str body_part) = 0;
+        virtual Connection::Flow    recieved_more_body(ft::Str body_part) = 0;
 
         // Response Functions
 
         /// @brief Returns the status code of the response.
-        virtual StatusCode  send_status_code() = 0;
+        virtual StatusCode          send_status_code() = 0;
 
         /// @brief Gets another HTTP header field for the response.
         ///
         /// @returns Whether a field was actually provided.
-        virtual bool        send_next_header(ft::Str& key, ft::Str& value) = 0;
+        virtual bool                send_next_header(ft::Str& key, ft::Str& value) = 0;
 
         /// @brief Indicates that more of the body is ready to be sent.
         ///
         /// @return Whether the connection should be closed.
-        virtual bool        send_more_body() = 0;
+        virtual Connection::Flow    send_more_body() = 0;
     };
 }

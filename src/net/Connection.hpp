@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:36:02 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 03:54:23 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:40:57 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,16 @@ namespace ws
     /// @brief An open connection.
     class Connection : public Pollable
     {
+    public:
+        /// @brief Describes whether the connection should be kept alive or
+        /// closed.
+        enum Flow
+        {
+            Continue,
+            Close,
+        };
+
+    private:
         int     _fd;
 
         bool    _reading_done;
@@ -74,11 +84,11 @@ namespace ws
         /// @brief Indicates that more data is available for reading.
         ///
         /// @returns Whether this connection still wants to read more data.
-        virtual bool    can_read_more() = 0;
+        virtual Flow    can_read_more() = 0;
 
         /// @brief Indicates that data can be sent through this connection.
         ///
         /// @return Whether the connection still wants to send more data.
-        virtual bool    can_send_more() = 0;
+        virtual Flow    can_send_more() = 0;
     };
 }

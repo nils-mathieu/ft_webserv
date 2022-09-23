@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:50:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 03:55:35 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:45:05 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,15 @@ namespace ws
         //  Implementation of the `HttpConnection` interaface
         // ===================================================
 
-        bool        parsed_invalid_http();
-        bool        parsed_method(Method method);
-        bool        parsed_uri(ft::Str uri);
-        bool        parsed_http_version(ft::Str http_version);
-        bool        parsed_header_field(ft::Str key, ft::Str value);
-        bool        parsed_header();
-        bool        recieved_more_body(ft::Str body_part);
-        StatusCode  send_status_code();
-        bool        send_next_header(ft::Str& key, ft::Str& value);
-        bool        send_more_body();
+        Connection::Flow    parsed_invalid_http();
+        Connection::Flow    parsed_method(Method method);
+        Connection::Flow    parsed_uri(ft::Str uri);
+        Connection::Flow    parsed_http_version(ft::Str http_version);
+        Connection::Flow    parsed_header_field(ft::Str key, ft::Str value);
+        Connection::Flow    parsed_header();
+        Connection::Flow    recieved_more_body(ft::Str body_part);
+        StatusCode          send_status_code();
+        bool                send_next_header(ft::Str& key, ft::Str& value);
+        Connection::Flow    send_more_body();
     };
 }
