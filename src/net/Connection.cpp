@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:37:41 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 22:39:51 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 01:10:36 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 namespace ws
 {
     Connection::Connection(int raw_fd) :
-        _fd(raw_fd)
+        _fd(raw_fd),
+        _reading_done(false),
+        _writing_done(false)
     {}
 
     Connection::~Connection()
@@ -44,20 +46,22 @@ namespace ws
 
     bool Connection::poll(PollTypes types)
     {
-        if ((types & PollTypes::In) != 0)
+        if ((types & PollTypes::In) != 0 && !this->_reading_done)
         {
             // New data is available for reading!
-            return this->can_read_more();
+            if (!this->can_read_more())
+                this->_reading_done = true;
         }
-        else if ((types & PollTypes::Out) != 0)
+        if ((types & PollTypes::Out) != 0 && !this->_writing_done)
         {
             // Data can be sent!
-            return this->can_send_more();
+            if (!this->can_send_more())
+                this->_writing_done = true;
         }
-        else
-        {
-            return (false);
-        }
+        if ((types & PollTypes::HangedUp) != 0)
+            return (true);
+
+        return (this->_reading_done && this->_writing_done);
     }
 
     size_t Connection::read_some(uint8_t* buf, size_t size)

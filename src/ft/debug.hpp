@@ -1,23 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sigint.hpp                                         :+:      :+:    :+:   */
+/*   debug.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/22 21:38:44 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 01:53:34 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/22 23:47:50 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/22 23:50:30 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
+
 namespace ft
 {
-    /// @brief Sets the signal handler up.
-    void    setup_interrupted();
-
-    /// @brief Determines whether the `SIGINT` signal has been recieved.
-    bool    interrupted();
-
-    /// @brief Resets the `interrupted` flag to `false`.
-    void    reset_interrupted();
+#ifdef DEBUG
+    /// @brief Checks whether `condition` is `true`. Otherwise aborts with a
+    /// message.
+    void    assert(bool condition, const char* msg);
+#else
+    inline void assert(bool, const char*) {}
+#endif
 }

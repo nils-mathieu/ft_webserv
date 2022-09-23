@@ -6,12 +6,12 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 21:43:14 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 00:50:46 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft/sigint.hpp"
-#include "net/DumpRequest.hpp"
+#include "http/DumpRequest.hpp"
 #include "async/AsyncExecutor.hpp"
 #include "net/Socket.hpp"
 #include "net/SpawnConnection.hpp"

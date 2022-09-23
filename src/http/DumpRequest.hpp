@@ -6,28 +6,34 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:50:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 22:32:59 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 02:13:41 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Connection.hpp"
+#include "ft/Slice.hpp"
+#include "HttpConnection.hpp"
 
 namespace ws
 {
-    class DumpRequest : public Connection
+    class DumpRequest : public HttpConnection
     {
-        bool    _got_one_byte;
+        size_t  _size;
 
     public:
         DumpRequest(int raw_fd);
 
-        // ==============================================
-        //  Implementation of the `Connection` interaface.
-        // ==============================================
+        // ===================================================
+        //  Implementation of the `HttpConnection` interaface
+        // ===================================================
 
-        bool    can_read_more();
-        bool    can_send_more();
+        bool    parsed_invalid_http();
+        bool    parsed_method(Method method);
+        bool    parsed_uri(ft::Str uri);
+        bool    parsed_http_version(ft::Str http_version);
+        bool    parsed_header_field(ft::Str key, ft::Str value);
+        bool    parsed_header();
+        bool    recieved_more_body(ft::Str body_part);
     };
 }

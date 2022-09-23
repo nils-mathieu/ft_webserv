@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:36:02 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 22:33:41 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 00:48:01 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ namespace ws
     class Connection : public Pollable
     {
         int     _fd;
+
+        bool    _reading_done;
+        bool    _writing_done;
 
     public:
         // ==============
@@ -71,12 +74,12 @@ namespace ws
 
         /// @brief Indicates that more data is available for reading.
         ///
-        /// @returns Whether the connection can be closed.
+        /// @returns Whether this connection still wants to read more data.
         virtual bool    can_read_more() = 0;
 
         /// @brief Indicates that data can be sent through this connection.
         ///
-        /// @return Whether the connection can be closed.
+        /// @return Whether the connection still wants to send more data.
         virtual bool    can_send_more() = 0;
     };
 }
