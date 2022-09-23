@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 14:19:26 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 14:21:31 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 21:46:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ namespace ws
     /// using sub-servers ( @c ServerBlock ).
     class MainServer
     {
+    public:
+        /// @brief The server blocks defined for this server.
         std::vector<ServerBlock>    blocks;
     };
 }

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 16:55:50 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 20:27:24 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 21:20:24 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ namespace ws
         std::vector< Pollable* >      _entities;
 
         /// @brief The descriptor returned by `epoll_create`.
-        int                                   _epoll;
+        int                           _epoll;
 
     public:
         // ==============
