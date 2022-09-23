@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 16:30:31 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 19:07:06 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 22:37:23 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,15 @@ namespace ws
         memcpy(&ret.sin_addr, this->address, 4);
 
         return (ret);
+    }
+
+    std::ostream& operator<<(std::ostream& s, const SocketAddress& address)
+    {
+        return s
+            << (uint32_t)address.address[0] << "."
+            << (uint32_t)address.address[1] << "."
+            << (uint32_t)address.address[2] << "."
+            << (uint32_t)address.address[3] << ":"
+            << address.port;
     }
 }

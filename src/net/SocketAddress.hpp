@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 16:27:27 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 16:40:58 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 22:02:10 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include <netinet/in.h>
+#include <ostream>
 
 namespace ws
 {
@@ -43,4 +44,6 @@ namespace ws
         /// @c SocketAddress instance.
         struct sockaddr_in sockaddr_in() const;
     };
+
+    std::ostream& operator<<(std::ostream& s, const SocketAddress& address);
 }

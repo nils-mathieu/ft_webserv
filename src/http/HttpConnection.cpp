@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:59 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:52:19 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 22:40:52 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -463,7 +463,7 @@ namespace ws
                 available -= i;
                 i = 0;
 
-                if (this->parsed_header())
+                if (this->parsed_header() == Connection::Close)
                     return (this->start_response(), Connection::Close);
                 else if (i == available)
                     return (Connection::Continue);
