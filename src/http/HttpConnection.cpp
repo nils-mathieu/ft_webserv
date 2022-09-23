@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:59 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:00:39 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:37:20 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,12 +99,12 @@ namespace ws
 
         size_t available = this->_data.available();
 
-        // ================================
-        //  2. resume parsing: HTTP method
-        // ================================
-
         while (true)
         {
+            // ================================
+            //  2. resume parsing: HTTP method
+            // ================================
+
             if (this->_state == 0)
             {
                 for (; i < available; ++i)
@@ -459,8 +459,7 @@ namespace ws
             }
         }
 
-        ft::assert(false, "reached unreachable code");
-        return (false);
+        return (true);
     }
 
     bool HttpConnection::can_send_more()
@@ -476,7 +475,7 @@ namespace ws
 
             if (this->_data.available() == 0)
                 this->_state = 12;
-            return (false);
+            return (true);
         }
 
         if (this->_state == 12)
@@ -485,10 +484,9 @@ namespace ws
             //  Sending The Body
             // ==================
 
-            return (this->send_more_body());
+            return (!this->send_more_body());
         }
 
-        ft::assert(false, "reached unreachable code");
-        return (false);
+        return (true);
     }
 }

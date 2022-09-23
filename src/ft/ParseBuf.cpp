@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 23:19:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 03:51:27 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:25:00 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ namespace ft
         if (available >= additional)
         {
             // That would be enough! We can avoid a reallocation.
-            memmove(this->_data, this->_data + this->_consumed, this->_consumed);
+            memmove(this->_data, this->_data + this->_consumed, this->_init - this->_consumed);
             this->_consumed = 0;
             return;
         }
@@ -115,6 +115,12 @@ namespace ft
     {
         assert(this->_consumed + count <= this->_init, "`consume`d more bytes than available");
         this->_consumed += count;
+
+        if (this->_consumed == this->_init)
+        {
+            this->_consumed = 0;
+            this->_init = 0;
+        }
     }
 
     void ParseBuf::clear()

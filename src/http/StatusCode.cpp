@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 03:53:38 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:12:25 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@ namespace ws
     {
         switch (this->_raw)
         {
+        case StatusCode::Continue: return "Continue";
         case StatusCode::Ok: return "OK";
+        case StatusCode::NotFound: return "Not Found";
         default: return "<Invalid>";
         }
     }

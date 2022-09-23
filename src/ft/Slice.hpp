@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:47:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:00:51 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:19:25 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <stddef.h>
 #include <algorithm>
 #include <ostream>
+#include <iostream>
 #include <limits>
 
 namespace ft
@@ -215,21 +216,21 @@ namespace ft
         T       tmp = val;
         while (tmp)
         {
-            size++;
+            ++size;
             tmp /= 10;
         }
 
-        uint8_t *t = buf;
+        uint8_t* t = buf + size;
 
         // Write the value.
         while (val)
         {
+            --t;
             *t = static_cast<uint8_t>((val % 10) + '0');
-            t++;
             val /= 10;
         }
 
-        return (t - buf);
+        return (size);
     }
 
     bool            operator==(Str a, const char *str);
