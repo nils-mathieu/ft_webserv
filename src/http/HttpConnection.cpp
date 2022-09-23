@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:59 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:48:05 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:52:19 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,10 @@ namespace ws
                     else if (method == "TRACE")
                         stop_requested = this->parsed_method(Method::Trace);
                     else
-                        stop_requested = this->parsed_invalid_http();
+                    {
+                        this->parsed_invalid_http();
+                        return (Connection::Close);
+                    }
 
                     if (stop_requested)
                         return (this->start_response(), Connection::Close);
@@ -277,13 +280,9 @@ namespace ws
                 {
                     if (this->_data[0] != '\r')
                     {
-                        if (this->parsed_invalid_http() == Connection::Close)
-                        {
-                            this->start_response();
-                            return (Connection::Close);
-                        }
-                        else
-                            return (Connection::Continue);
+                        this->parsed_invalid_http();
+                        this->start_response();
+                        return (Connection::Close);
                     }
                     ++i;
                 }
@@ -295,13 +294,9 @@ namespace ws
                 {
                     if (this->_data[1] != '\n')
                     {
-                        if (this->parsed_invalid_http() == Connection::Close)
-                        {
-                            this->start_response();
-                            return (Connection::Close);
-                        }
-                        else
-                            return (Connection::Continue);
+                        this->parsed_invalid_http();
+                        this->start_response();
+                        return (Connection::Close);
                     }
                     ++i;
                 }
@@ -397,13 +392,9 @@ namespace ws
                 {
                     if (this->_data[0] != '\r')
                     {
-                        if (this->parsed_invalid_http() == Connection::Close)
-                        {
-                            this->start_response();
-                            return (Connection::Close);
-                        }
-                        else
-                            return (Connection::Continue);
+                        this->parsed_invalid_http();
+                        this->start_response();
+                        return (Connection::Close);
                     }
                     ++i;
                 }
@@ -415,13 +406,9 @@ namespace ws
                 {
                     if (this->_data[1] != '\n')
                     {
-                        if (this->parsed_invalid_http() == Connection::Close)
-                        {
-                            this->start_response();
-                            return (Connection::Close);
-                        }
-                        else
-                            return (Connection::Continue);
+                        this->parsed_invalid_http();
+                        this->start_response();
+                        return (Connection::Close);
                     }
                     ++i;
                 }
@@ -450,13 +437,9 @@ namespace ws
                 {
                     if (this->_data[0] != '\r')
                     {
-                        if (this->parsed_invalid_http() == Connection::Close)
-                        {
-                            this->start_response();
-                            return (Connection::Close);
-                        }
-                        else
-                            return (Connection::Continue);
+                        this->parsed_invalid_http();
+                        this->start_response();
+                        return (Connection::Close);
                     }
                     ++i;
                 }
@@ -468,13 +451,9 @@ namespace ws
                 {
                     if (this->_data[1] != '\n')
                     {
-                        if (this->parsed_invalid_http() == Connection::Close)
-                        {
-                            this->start_response();
-                            return (Connection::Close);
-                        }
-                        else
-                            return (Connection::Continue);
+                        this->parsed_invalid_http();
+                        this->start_response();
+                        return (Connection::Close);
                     }
                     ++i;
                 }

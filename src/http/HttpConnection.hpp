@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:40:31 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:39:47 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:50:33 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ namespace ws
         /// @brief Indicates that invalid HTTP was found in the request.
         ///
         /// @returns Whether the connection is done reading the request.
-        virtual Connection::Flow    parsed_invalid_http() = 0;
+        virtual void                parsed_invalid_http() = 0;
 
         /// @brief Indicates that the method of the HTTP request has been
         /// parsed.

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:52:01 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:46:46 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:52:01 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,9 @@ namespace ws
         _size(0)
     {}
 
-    Connection::Flow DumpRequest::parsed_invalid_http()
+    void DumpRequest::parsed_invalid_http()
     {
         std::cout << "found invalid HTTP in the request" << std::endl;
-        return (Connection::Close);
     }
 
     Connection::Flow DumpRequest::parsed_method(Method method)
