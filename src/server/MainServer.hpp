@@ -1,42 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StatusCode.hpp                                     :+:      :+:    :+:   */
+/*   MainServer.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:11 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/23 14:19:26 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/23 14:21:31 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stdint.h>
+#include "ServerBlock.hpp"
+
+#include <vector>
 
 namespace ws
 {
-    class StatusCode
+    /// @brief The main server is responsible for actually serving requests
+    /// using sub-servers ( @c ServerBlock ).
+    class MainServer
     {
-    public:
-        enum Variant
-        {
-            Continue = 100,
-
-            Ok = 200,
-
-            NotFound = 404,
-        };
-
-    private:
-        Variant     _raw;
-
-    public:
-        StatusCode(Variant raw = Ok);
-
-        /// @brief Computes the name of this status code.
-        const char* name() const;
-
-        operator Variant() const;
+        std::vector<ServerBlock>    blocks;
     };
 }

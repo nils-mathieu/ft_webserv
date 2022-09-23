@@ -1,42 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StatusCode.hpp                                     :+:      :+:    :+:   */
+/*   Methods.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:11 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/23 12:47:11 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/23 12:48:06 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-
-#include <stdint.h>
+#include "Methods.hpp"
 
 namespace ws
 {
-    class StatusCode
+    Methods::Methods(Methods::Variants raw) :
+        _raw(raw)
+    {}
+
+    Methods::operator uint32_t() const
     {
-    public:
-        enum Variant
-        {
-            Continue = 100,
-
-            Ok = 200,
-
-            NotFound = 404,
-        };
-
-    private:
-        Variant     _raw;
-
-    public:
-        StatusCode(Variant raw = Ok);
-
-        /// @brief Computes the name of this status code.
-        const char* name() const;
-
-        operator Variant() const;
-    };
+        return (this->_raw);
+    }
 }

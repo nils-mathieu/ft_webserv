@@ -1,42 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StatusCode.hpp                                     :+:      :+:    :+:   */
+/*   Scope.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:11 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/23 12:50:14 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/23 13:42:25 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-
-#include <stdint.h>
+#include "Scope.hpp"
 
 namespace ws
 {
-    class StatusCode
-    {
-    public:
-        enum Variant
-        {
-            Continue = 100,
-
-            Ok = 200,
-
-            NotFound = 404,
-        };
-
-    private:
-        Variant     _raw;
-
-    public:
-        StatusCode(Variant raw = Ok);
-
-        /// @brief Computes the name of this status code.
-        const char* name() const;
-
-        operator Variant() const;
-    };
+    Scope::Scope() :
+        methods(),
+        status(StatusCode::Ok),
+        children(),
+        outcomes()
+    {}
 }

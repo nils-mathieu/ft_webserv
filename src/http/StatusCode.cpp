@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:12:25 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 13:35:34 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ namespace ws
         }
     }
 
-    StatusCode::operator uint32_t() const
+    StatusCode::operator StatusCode::Variant() const
     {
         return (this->_raw);
     }

@@ -1,42 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StatusCode.hpp                                     :+:      :+:    :+:   */
+/*   Sink.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:11 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/23 18:55:04 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/23 18:59:01 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stdint.h>
+#include <ostream>
 
-namespace ws
+namespace ft
 {
-    class StatusCode
+    class Sink : public std::ostream
     {
-    public:
-        enum Variant
-        {
-            Continue = 100,
-
-            Ok = 200,
-
-            NotFound = 404,
-        };
-
-    private:
-        Variant     _raw;
-
-    public:
-        StatusCode(Variant raw = Ok);
-
-        /// @brief Computes the name of this status code.
-        const char* name() const;
-
-        operator Variant() const;
     };
 }

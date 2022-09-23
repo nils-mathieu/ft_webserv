@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 21:39:08 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 21:41:58 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 19:02:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,34 @@
 
 namespace ft
 {
-    static bool flag = false;
-
-    static void handler(int)
+    namespace sigint
     {
-        flag = true;
-    }
+        static bool flag = false;
 
-    void setup_interrupted()
-    {
-        struct sigaction act;
-        sigemptyset(&act.sa_mask);
-        act.sa_flags = 0;
-        act.sa_handler = handler;
+        static void handler(int)
+        {
+            flag = true;
+        }
 
-        if (sigaction(SIGINT, &act, 0) != 0)
-            throw OsException("failed to setup a SIGINT signal handler");
-    }
+        void initialize()
+        {
+            struct sigaction act;
+            sigemptyset(&act.sa_mask);
+            act.sa_flags = 0;
+            act.sa_handler = handler;
 
-    bool interrupted()
-    {
-        return flag;
-    }
+            if (sigaction(SIGINT, &act, 0) != 0)
+                throw OsException("failed to setup a SIGINT signal handler");
+        }
 
-    void reset_interrupted()
-    {
-        flag = false;
+        bool occured()
+        {
+            return flag;
+        }
+
+        void reset()
+        {
+            flag = false;
+        }
     }
 }

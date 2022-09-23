@@ -1,42 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StatusCode.hpp                                     :+:      :+:    :+:   */
+/*   LogLevel.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:11 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/23 18:48:35 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/23 18:59:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stdint.h>
-
-namespace ws
+namespace ft
 {
-    class StatusCode
+    namespace log
     {
-    public:
-        enum Variant
+        enum LogLevel
         {
-            Continue = 100,
-
-            Ok = 200,
-
-            NotFound = 404,
+            Error,
+            Warn,
+            Info,
+            Trace,
         };
-
-    private:
-        Variant     _raw;
-
-    public:
-        StatusCode(Variant raw = Ok);
-
-        /// @brief Computes the name of this status code.
-        const char* name() const;
-
-        operator Variant() const;
-    };
+    }
 }

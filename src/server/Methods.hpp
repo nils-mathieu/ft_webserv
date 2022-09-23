@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StatusCode.hpp                                     :+:      :+:    :+:   */
+/*   Methods.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:11 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/23 12:44:43 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/23 13:43:10 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,29 @@
 
 namespace ws
 {
-    class StatusCode
+    /// @brief A collection of allowed methods.
+    class Methods
     {
     public:
-        enum Variant
+        enum Variants
         {
-            Continue = 100,
-
-            Ok = 200,
-
-            NotFound = 404,
+            None = 0,
+            Get = 1 << 0,
+            Head = 1 << 1,
+            Post = 1 << 2,
+            Put = 1 << 3,
+            Delete = 1 << 4,
+            Connect = 1 << 5,
+            Options = 1 << 6,
+            Trace = 1 << 7,
         };
 
     private:
-        Variant     _raw;
+        Variants    _raw;
 
     public:
-        StatusCode(Variant raw = Ok);
+        Methods(Variants raw = None);
 
-        /// @brief Computes the name of this status code.
-        const char* name() const;
-
-        operator Variant() const;
+        operator uint32_t() const;
     };
 }

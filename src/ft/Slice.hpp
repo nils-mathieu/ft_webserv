@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:47:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:19:25 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 14:12:23 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,12 +156,20 @@ namespace ft
             return *(this->_start + index);
         }
 
-        bool        operator==(Slice<T> other) const
+        bool        operator==(const Slice<T> other) const
         {
-            return std::equal(this->begin(), this->end(), other->begin(), other->end());
+            const T*    a = this->begin();
+            const T*    b = other.begin();
+
+            while (a != this->end() && b != other.end() && *a == *b)
+            {
+                a++;
+                b++;
+            }
+            return (a == this->end() && b == other.end());
         }
 
-        bool        operator!=(Slice<T> other) const
+        bool        operator!=(const Slice<T> other) const
         {
             return !(*this == other);
         }

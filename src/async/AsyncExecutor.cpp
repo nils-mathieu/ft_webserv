@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 17:03:22 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 21:43:07 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 19:02:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ namespace ws
 
         int count = epoll_wait(this->_epoll, evs, 32, timeout);
 
-        if (ft::interrupted())
+        if (ft::sigint::occured())
             return (true);
 
         if (count <= -1)
