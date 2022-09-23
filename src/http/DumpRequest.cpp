@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:52:01 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 02:19:19 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 03:58:12 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,22 @@ namespace ws
         this->_size -= body_part.size();
         std::cout << body_part << std::endl;
         return (this->_size == 0);
+    }
+
+    StatusCode DumpRequest::send_status_code()
+    {
+        return StatusCode::Ok;
+    }
+
+    bool DumpRequest::send_next_header(ft::Str& key, ft::Str& value)
+    {
+        (void)key;
+        (void)value;
+        return false;
+    }
+
+    bool DumpRequest::send_more_body()
+    {
+        return true;
     }
 }

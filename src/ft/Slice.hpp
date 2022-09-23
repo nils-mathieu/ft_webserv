@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:47:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 02:19:57 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 04:00:51 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,47 @@ namespace ft
             it++;
         }
         return (it);
+    }
+
+    /// @brief Writes the provided integer to the provided buffer, assuming
+    /// enough space is provided.
+    ///
+    /// @param val The value to write.
+    /// @param buf The buffer that will be used.
+    ///
+    /// @return The number of written characters.
+    template< typename T >
+    size_t write_int(T val, uint8_t* buf)
+    {
+        assert(val >= 0, "negative integers not supported");
+
+        // Handle the `0` edge case.
+        if (val == 0)
+        {
+            *buf = '0';
+            return (1);
+        }
+
+        // Compute the size of the value, when written in decimal.
+        size_t  size = 0;
+        T       tmp = val;
+        while (tmp)
+        {
+            size++;
+            tmp /= 10;
+        }
+
+        uint8_t *t = buf;
+
+        // Write the value.
+        while (val)
+        {
+            *t = static_cast<uint8_t>((val % 10) + '0');
+            t++;
+            val /= 10;
+        }
+
+        return (t - buf);
     }
 
     bool            operator==(Str a, const char *str);

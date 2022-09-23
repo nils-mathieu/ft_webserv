@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 23:19:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/22 23:58:06 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 03:51:27 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 namespace ft
 {
     ParseBuf::ParseBuf(size_t capacity) :
-        _alloc(std::allocator<uint8_t>()),
+        _alloc(),
         _data(0),
         _cap(0),
         _init(0),
@@ -43,6 +43,11 @@ namespace ft
     uint8_t* ParseBuf::read_buffer()
     {
         return (this->_data + this->_init);
+    }
+
+    ft::Slice<uint8_t>  ParseBuf::spare_slice()
+    {
+        return ft::Slice<uint8_t>(this->_data + this->_init, this->_cap - this->_init);
     }
 
     void ParseBuf::assume_filled(size_t count)
@@ -110,6 +115,12 @@ namespace ft
     {
         assert(this->_consumed + count <= this->_init, "`consume`d more bytes than available");
         this->_consumed += count;
+    }
+
+    void ParseBuf::clear()
+    {
+        this->_consumed = 0;
+        this->_init = 0;
     }
 
     uint8_t ParseBuf::operator[](size_t index)

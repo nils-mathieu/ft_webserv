@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:37:41 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 01:10:36 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 03:54:26 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,9 @@ namespace ws
         return (this->_reading_done && this->_writing_done);
     }
 
-    size_t Connection::read_some(uint8_t* buf, size_t size)
+    size_t Connection::read_some(ft::Slice<uint8_t> slice)
     {
-        ssize_t count = read(this->_fd, buf, size);
+        ssize_t count = read(this->_fd, slice.data(), slice.size());
 
         if (count <= -1)
             throw ft::OsException("failed to read data from socket");
@@ -74,9 +74,9 @@ namespace ws
         return (count);
     }
 
-    size_t Connection::send_some(const uint8_t* data, size_t count)
+    size_t Connection::send_some(ft::Slice<uint8_t> slice)
     {
-        ssize_t ret = write(this->_fd, data, count);
+        ssize_t ret = write(this->_fd, slice.data(), slice.size());
 
         if (ret <= -1)
             throw ft::OsException("failed to send data to socket");

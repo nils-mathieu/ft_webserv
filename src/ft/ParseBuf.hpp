@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 23:09:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 00:07:00 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 03:50:49 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,9 @@ namespace ft
         /// written.
         uint8_t*            read_buffer();
 
+        /// @brief Returns a slice over the unused part of this buffer.
+        ft::Slice<uint8_t>  spare_slice();
+
         /// @brief Assumes that this @c ParseBuf has been filled with `count`
         /// additional instances.
         ///
@@ -76,6 +79,9 @@ namespace ft
         ///
         /// @warning The provided count must remain bellow `available()`.
         void                consume(size_t count);
+
+        /// @brief Clears the buffer.
+        void                clear();
 
         /// @brief Gets a specific byte.
         uint8_t operator[](size_t index);

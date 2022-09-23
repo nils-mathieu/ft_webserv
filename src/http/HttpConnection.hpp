@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:40:31 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 02:13:20 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 03:54:57 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,21 @@
 #include "ft/Slice.hpp"
 #include "Method.hpp"
 #include "net/Connection.hpp"
+#include "StatusCode.hpp"
 
 namespace ws
 {
     class HttpConnection : public Connection
     {
     private:
-        /// @brief The vector used to read the request.
+        /// @brief The vector used to read and respond to the request.
         ft::ParseBuf    _data;
 
-        /// @brief The current state of the parsing.
+        /// @brief The current state of the connection.
+        ///
+        /// =======================
+        /// = Parsing The Request =
+        /// =======================
         ///
         /// ====== The First Line ======
         ///
@@ -43,21 +48,33 @@ namespace ws
         ///  6 - parsing the key of a key-value pair.
         ///  7 - parsing the value of a key-value pair.
         ///  8 - parsing the final CRLF of a key-value pair.
-        ///  9 - parsing the CRLF ending the header.
         ///
         /// ====== The Body ======
         ///
+        ///  9 - parsing the CRLF ending the header.
         /// 10 - reading the body of the request.
-        int             _parsing_state;
+        ///
+        /// ======================
+        /// = Sending A Response =
+        /// ======================
+        ///
+        /// 11 - sending the header
+        /// 12 - sending the body
+        int             _state;
 
         /// @brief The size of the request so far.
         size_t          _size;
 
-        /// @brief The index of the ':' character in a key-value pair.
+        /// State 6, 7, 8:
+        ///  The index of the ':' character in a key-value pair.
         size_t          _colon_position;
 
     public:
         HttpConnection(int raw_fd);
+
+    private:
+        /// @brief Starts the response.
+        void    start_response();
 
     protected:
         // ==============================================
@@ -71,6 +88,8 @@ namespace ws
         // ===========
         //  interface
         // ===========
+
+        // Parsing Functions
 
         /// @brief Indicates that invalid HTTP was found in the request.
         ///
@@ -119,5 +138,20 @@ namespace ws
         ///
         /// @returns Whether the connection is done reading the request.
         virtual bool    recieved_more_body(ft::Str body_part) = 0;
+
+        // Response Functions
+
+        /// @brief Returns the status code of the response.
+        virtual StatusCode  send_status_code() = 0;
+
+        /// @brief Gets another HTTP header field for the response.
+        ///
+        /// @returns Whether a field was actually provided.
+        virtual bool        send_next_header(ft::Str& key, ft::Str& value) = 0;
+
+        /// @brief Indicates that more of the body is ready to be sent.
+        ///
+        /// @return Whether the connection should be closed.
+        virtual bool        send_more_body() = 0;
     };
 }

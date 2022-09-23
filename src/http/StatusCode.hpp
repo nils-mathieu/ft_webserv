@@ -1,48 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Method.hpp                                         :+:      :+:    :+:   */
+/*   StatusCode.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/22 22:44:15 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 02:36:19 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/23 03:52:50 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <ostream>
+#include <stdint.h>
 
 namespace ws
 {
-    /// @brief An HTTP method.
-    class Method
+    class StatusCode
     {
     public:
         enum Variant
         {
-            Get,
-            Head,
-            Post,
-            Put,
-            Delete,
-            Connect,
-            Options,
-            Trace,
+            Ok = 200,
         };
 
     private:
-        Variant _raw;
+        Variant     _raw;
 
     public:
-        Method(Variant raw);
+        StatusCode(Variant raw);
 
-        /// @brief Returns the name of this HTTP method.
+        /// @brief Computes the name of this status code.
         const char* name() const;
 
-        bool operator==(Method other);
+        operator uint32_t() const;
     };
-
-    std::ostream& operator<<(std::ostream& s, Method other);
 }

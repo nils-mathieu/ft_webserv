@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:45:33 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 00:58:20 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 02:39:15 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,24 @@ namespace ws
         return (this->_raw == other._raw);
     }
 
+    const char* Method::name() const
+    {
+        switch (this->_raw)
+        {
+        case Method::Get: return "GET";
+        case Method::Head: return "HEAD";
+        case Method::Post: return "POST";
+        case Method::Put: return "PUT";
+        case Method::Delete: return "DELETE";
+        case Method::Connect: return "CONNECT";
+        case Method::Options: return "OPTIONS";
+        case Method::Trace: return "TRACE";
+        default: return "<INVALID>";
+        }
+    }
+
     std::ostream& operator<<(std::ostream& s, Method method)
     {
-        if (method == Method::Get)
-            return s << "GET";
-        if (method == Method::Head)
-            return s << "HEAD";
-        if (method == Method::Post)
-            return s << "POST";
-        if (method == Method::Put)
-            return s << "PUT";
-        if (method == Method::Delete)
-            return s << "DELETE";
-        if (method == Method::Connect)
-            return s << "CONNECT";
-        if (method == Method::Options)
-            return s << "OPTIONS";
-        if (method == Method::Trace)
-            return s << "TRACE";
-        return s << "<INVALID>";
+        return s << method.name();
     }
 }

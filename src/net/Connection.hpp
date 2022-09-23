@@ -6,12 +6,13 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:36:02 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 00:48:01 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/23 03:54:23 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "ft/Slice.hpp"
 #include "async/Pollable.hpp"
 
 namespace ws
@@ -53,19 +54,17 @@ namespace ws
         /// @details This function should only be called within the
         /// `call_send_more` callback function.
         ///
-        /// @param data A pointer to the bytes that are to be sent.
-        /// @param count The number of bytes to send.
+        /// @param slice The source buffer.
         ///
         /// @return The number of bytes that were sent.
-        size_t          send_some(const uint8_t* data, size_t count);
+        size_t          send_some(ft::Slice<uint8_t> slice);
 
         /// @brief Reads some bytes
         ///
-        /// @param buf The buffer that is to store available data.
-        /// @param count The size of the buffer.
+        /// @param slice The destination buffer.
         ///
         /// @return The number of bytes that were read.
-        size_t          read_some(uint8_t* buf, size_t count);
+        size_t          read_some(ft::Slice<uint8_t> slice);
 
     protected:
         // ======================
