@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 18:13:13 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 18:29:44 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,40 @@
 
 #include <iomanip>
 #include <iostream>
+
+/// @brief Opens enough socket to cover the address requested by the provided
+/// configuration.
+void append_sockets(ws::Config& config, ws::AsyncExecutor& executor, std::vector<ws::RespondWithServer>& responders)
+{
+    std::vector<ws::ServerBlock>::const_iterator begin = config.blocks.begin();
+    std::vector<ws::ServerBlock>::const_iterator end = config.blocks.end();
+    std::vector<ws::ServerBlock>::const_iterator it1 = begin;
+    std::vector<ws::ServerBlock>::const_iterator it2;
+
+    while (it1 != end)
+    {
+        bool    found = false;
+
+        it2 = begin;
+        while (it2 != it1)
+        {
+            if (it2->address == it1->address)
+            {
+                found = true;
+                break;
+            }
+            it2++;
+        }
+
+        if (!found)
+        {
+            responders.push_back(ws::RespondWithServer(executor, config, it1->address));
+            executor.append(new ws::Socket(it1->address, responders.back()));
+        }
+
+        it1++;
+    }
+}
 
 /// @brief Like `main`, but can throw.
 int fallible_main(int argc, char** argv)
@@ -144,10 +178,12 @@ int fallible_main(int argc, char** argv)
     // ==========================
     //  Start The Async Executor
     // ==========================
-    ws::SocketAddress       address(127, 0, 0, 1, 8000);
-    ws::AsyncExecutor       executor;
-    ws::RespondWithServer   responder(executor, config, address);
-    executor.append(new ws::Socket(address, responder));
+
+    ws::AsyncExecutor executor;
+    std::vector<ws::RespondWithServer> responders;
+    responders.reserve(config.blocks.size());
+
+    append_sockets(config, executor, responders);
 
     while (!ft::sigint::occured())
     {
