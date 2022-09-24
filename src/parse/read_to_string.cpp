@@ -6,14 +6,13 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 03:03:11 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 13:15:31 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 15:15:53 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "read_to_string.hpp"
 #include "CantOpen.hpp"
 #include "CantRead.hpp"
-#include "FileTooLarge.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -33,18 +32,21 @@ namespace ws
                     break;
 
                 if (stream.fail() || stream.bad())
-                    throw CantRead();
+                    throw CantRead("invalid read");
+
+                if (c == '\0')
+                    throw CantRead("binary file detected");
 
                 s.push_back(c);
 
                 if (s.size() >= 2000000)
-                    throw FileTooLarge(s.size());
+                    throw CantRead("file exceeds 2Mib");
             }
         }
 
         void read_file_to_string(const char* path, std::string& s)
         {
-            std::fstream    stream(path);
+            std::ifstream    stream(path);
 
             if (!stream)
                 throw CantOpen(path);

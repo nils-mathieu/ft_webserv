@@ -6,14 +6,15 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 13:20:23 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 18:13:13 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse/read_to_string.hpp"
 #include "parse/CantRead.hpp"
 #include "parse/CantOpen.hpp"
-#include "parse/FileTooLarge.hpp"
+#include "parse/ParseException.hpp"
+#include "parse/parse_into_config.hpp"
 #include "ft/log.hpp"
 #include "ft/sigint.hpp"
 #include "ft/Color.hpp"
@@ -21,6 +22,7 @@
 #include "net/Socket.hpp"
 #include "server/RespondWithServer.hpp"
 
+#include <iomanip>
 #include <iostream>
 
 /// @brief Like `main`, but can throw.
@@ -70,7 +72,7 @@ int fallible_main(int argc, char** argv)
     {
         ws::parse::read_file_to_string(config_path, config_file);
     }
-    catch(const ws::parse::CantRead&)
+    catch(const ws::parse::CantRead& e)
     {
         ft::log::error()
             << ft::log::Color::Red
@@ -80,7 +82,9 @@ int fallible_main(int argc, char** argv)
             << ft::log::Color::Yellow
             << config_path
             << ft::log::Color::Reset
-            << "`" << std::endl;
+            << "`: "
+            << e.message
+            << std::endl;
         return (1);
     }
     catch (const ws::parse::CantOpen&)
@@ -96,24 +100,46 @@ int fallible_main(int argc, char** argv)
             << "` for reading" << std::endl;
         return (1);
     }
-    catch (const ws::parse::FileTooLarge& e)
+
+    ws::Config              config;
+
+    try
+    {
+        ws::parse::parse_into_config(config, ft::Str((uint8_t*)config_file.data(), config_file.size()));
+    }
+    catch (const ws::parse::ParseException& e)
     {
         ft::log::error()
             << ft::log::Color::Red
             << "error"
             << ft::log::Color::Reset
-            << ": config is too large ("
-            << ft::log::Color::Yellow;
-        e.write_human_size(ft::log::error());
-        ft::log::error()
+            << ": failed to parse `"
+            << ft::log::Color::Yellow
+            << config_path
             << ft::log::Color::Reset
-            << ")" << std::endl;
-        return (1);
+            << "`" << std::endl
+            << ft::log::Color::Dim
+            << std::setw(5) << e.line_no
+            << " | "
+            << ft::log::Color::Reset
+            << e.line.slice(0, e.start)
+            << ft::log::Color::Underline
+            << ((e.start == e.end) ? ft::make_str(" ") : e.line.slice(e.start, e.end))
+            << ft::log::Color::Reset
+            << e.line.slice(e.end, e.line.size())
+            << std::endl;
+        for (size_t i = 0; i < 8 + e.start; i++)
+            ft::log::error() << ' ';
+        ft::log::error()
+            << ft::log::Color::Dim
+            << "^ "
+            << ft::log::Color::Reset
+            << ft::log::Color::Yellow
+            << e.message
+            << ft::log::Color::Reset
+            << std::endl;
+        return (3);
     }
-
-    std::cout << config_file << std::endl;
-
-    ws::Config              config;
 
     // ==========================
     //  Start The Async Executor

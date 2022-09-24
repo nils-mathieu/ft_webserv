@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:11 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:18:20 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,15 @@ namespace ws
             NotFound = 404,
         };
 
-    private:
-        Variant     _raw;
+        uint32_t     code;
 
     public:
-        StatusCode(Variant raw = Ok);
+        StatusCode(Variant variant = Ok);
+        StatusCode(uint32_t code);
 
         /// @brief Computes the name of this status code.
         const char* name() const;
 
-        operator Variant() const;
+        operator uint32_t() const;
     };
 }

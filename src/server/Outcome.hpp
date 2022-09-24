@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:53:08 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:52:54 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:25:27 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ namespace ws
     private:
         union Repr
         {
-            StatusCode::Variant _throw;
+            uint32_t            _throw;
             uint8_t*            _file[2];
             uint8_t*            _root[2];
         };

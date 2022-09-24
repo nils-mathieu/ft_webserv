@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:56:03 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:38:21 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ namespace ws
         std::vector<Outcome>    outcomes;
         /// @brief The catchers defined for this scope.
         std::vector<Catcher>    catchers;
+        /// @brief Whether an index should be generated when accessing a
+        /// directory.
+        bool                    generate_index;
 
     public:
         Scope();

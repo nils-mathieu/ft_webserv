@@ -1,28 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CantRead.cpp                                       :+:      :+:    :+:   */
+/*   ParseException.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/24 03:12:32 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 15:14:05 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/24 14:47:04 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/24 14:50:29 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CantRead.hpp"
+#include "ParseException.hpp"
 
 namespace ws
 {
     namespace parse
     {
-        CantRead::CantRead(const char* message) :
+        ParseException::ParseException(
+            size_t line_no,
+            ft::Str line,
+            size_t start,
+            size_t end,
+            const char* message
+        ) :
+            line_no(line_no),
+            line(line),
+            start(start),
+            end(end),
             message(message)
         {}
 
-        void CantRead::write(std::ostream& s) const
+        void ParseException::write(std::ostream& stream) const
         {
-            s << "read error: " << this->message;
+            stream << "line " << this->line_no << ": " << this->message;
         }
     }
 }

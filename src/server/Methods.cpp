@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:47:11 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 12:48:06 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:10:43 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,33 @@ namespace ws
         _raw(raw)
     {}
 
-    Methods::operator uint32_t() const
+    Methods::operator Methods::Variants() const
     {
         return (this->_raw);
+    }
+
+    Methods Methods::operator&(Methods other) const
+    {
+        return (Methods::Variants)(this->_raw & other._raw);
+    }
+
+    void Methods::operator&=(Methods other)
+    {
+        *this = *this & other;
+    }
+
+    Methods Methods::operator|(Methods other) const
+    {
+        return (Methods::Variants)(this->_raw | other._raw);
+    }
+
+    void Methods::operator|=(Methods other)
+    {
+        *this = *this | other;
+    }
+
+    Methods Methods::operator~() const
+    {
+        return (Methods::Variants)~this->_raw;
     }
 }

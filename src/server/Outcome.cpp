@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:00:56 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:57:19 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:25:19 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ namespace ws
     void Outcome::set_throw(StatusCode code)
     {
         this->_variant = Outcome::Throw;
-        this->_repr._throw = code;
+        this->_repr._throw = (uint32_t)code;
     }
 
     void Outcome::set_file(ft::Str file_path)

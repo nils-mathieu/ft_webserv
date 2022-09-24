@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:44:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:43:10 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:10:53 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ namespace ws
             Connect = 1 << 5,
             Options = 1 << 6,
             Trace = 1 << 7,
+            All = Get | Head | Post | Put | Delete | Connect | Options | Trace,
         };
 
     private:
@@ -39,6 +40,12 @@ namespace ws
     public:
         Methods(Variants raw = None);
 
-        operator uint32_t() const;
+        operator Variants() const;
+
+        Methods operator&(Methods other) const;
+        void operator&=(Methods other);
+        Methods operator|(Methods other) const;
+        void operator|=(Methods other);
+        Methods operator~() const;
     };
 }

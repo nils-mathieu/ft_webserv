@@ -6,11 +6,13 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:47:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 14:12:23 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 18:04:39 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include "debug.hpp"
 
 #include <stdint.h>
 #include <string.h>
@@ -53,7 +55,9 @@ namespace ft
         Slice(T* start, T* end) :
             _start(start),
             _end(end)
-        {}
+        {
+            assert(this->_start <= this->_end, "can't create a slice with `start > end`");
+        }
 
         /// @brief Creates a new @c Slice instance from a pointer and a size.
         ///
@@ -68,19 +72,28 @@ namespace ft
         //  Data
         // ======
 
+        /// @brief Returns a pointer to the first element of this slice.
         const T*    data() const
         {
             return (this->_start);
         }
 
+        /// @brief Returns a pointer to the first element of this slice.
         T*          data()
         {
             return (this->_start);
         }
 
+        /// @brief Returns the number of elements in this slice.
         size_t      size() const
         {
             return (this->_end - this->_start);
+        }
+
+        /// @brief Returns whether this slice is empty.
+        bool        empty() const
+        {
+            return (this->_start == this->_end);
         }
 
         // ===========
@@ -112,34 +125,89 @@ namespace ft
         // ==============
 
         /// @brief Takes a slice of this slice ;)
-        Slice       slice(size_t start, size_t end)
+        Slice       slice(size_t start, size_t end) const
         {
             return Slice(this->_start + start, this->_start + end);
         }
 
         /// @brief Trims the start of this slice.
-        Slice       trim_left(bool (*predicate)(const T&))
+        Slice       trim_left(bool (*predicate)(const T&)) const
         {
-            T*      it = this->begin();
+            const T*      it = this->begin();
 
             while (it != this->end() && (*predicate)(*it))
                 it++;
-            return Slice(it, this->end());
+            return Slice((T*)it, (T*)this->end());
         }
 
         /// @brief Trims the end of this slice.
-        Slice       trim_right(bool (*predicate)(const T&))
+        Slice       trim_right(bool (*predicate)(const T&)) const
         {
-            T*      it = this->end();
+            const T*      it = this->end();
 
-            while (--it != this->begin() && (*predicate)(*it));
-            return (Slice(this->begin(), ++it));
+            while (it != this->begin() && (*predicate)(*(it - 1)))
+                it--;
+
+            return (Slice((T*)this->begin(), (T*)it));
         }
 
         /// @brief Trims this slice.
-        Slice       trim(bool (*predicate)(const T&))
+        Slice       trim(bool (*predicate)(const T&)) const
         {
             return this->trim_left(predicate).trim_right(predicate);
+        }
+
+        // ==================
+        //  Pseudo-Iterators
+        // ==================
+
+        /// @brief Splits this slice once.
+        ///
+        /// @param first The slice that'll contain the first part of the slice.
+        /// @param second The slice that'll contain the second part of the
+        /// slice.
+        /// @param delim The delimitter (included).
+        ///
+        /// @return Whether a delimitter was actually found.
+        bool split_once(Slice& first, Slice& second, const T& delim) const
+        {
+            const T* it = this->begin();
+
+            while (it != this->end())
+            {
+                if (*it == delim)
+                {
+                    // Found!
+                    first = Slice(this->_start, (T*)it);
+                    second = Slice((T*)it, this->_end);
+                    return (true);
+                }
+                it++;
+            }
+
+            // Not Found :(
+            return (false);
+        }
+
+        /// @brief Splits this slice into two parts at the specified delimitter.
+        /// The first part is returned and this instance is replaced by the
+        /// second one.
+        ///
+        /// @param delim The delimitter (not included).
+        Slice next_split(const T& delim)
+        {
+            Slice   first;
+            Slice   second;
+
+            if (this->split_once(first, second, delim))
+                *this = second.slice(1, second.size());
+            else
+            {
+                first = *this;
+                *this = Slice();
+            }
+
+            return (first);
         }
 
         // ===========
@@ -183,7 +251,7 @@ namespace ft
 
     /// @brief Parses a @c T from the provided slice.
     template< typename T >
-    const uint8_t*  parse_str(Str str, T& ret)
+    const uint8_t*  parse_str_start(Str str, T& ret)
     {
         const uint8_t*  it = str.begin();
 
@@ -198,6 +266,13 @@ namespace ft
             it++;
         }
         return (it);
+    }
+
+    template< typename T >
+    bool parse_str(Str str, T& ret)
+    {
+        const uint8_t* end = parse_str_start(str, ret);
+        return (end && end == str.end());
     }
 
     /// @brief Writes the provided integer to the provided buffer, assuming

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 13:35:34 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:18:58 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 
 namespace ws
 {
-    StatusCode::StatusCode(StatusCode::Variant raw) :
-        _raw(raw)
+    StatusCode::StatusCode(StatusCode::Variant variant) :
+        code((uint32_t)variant)
+    {}
+
+    StatusCode::StatusCode(uint32_t code) :
+        code(code)
     {}
 
     const char* StatusCode::name() const
     {
-        switch (this->_raw)
+        switch ((StatusCode::Variant)this->code)
         {
         case StatusCode::Continue: return "Continue";
         case StatusCode::Ok: return "OK";
@@ -29,8 +33,8 @@ namespace ws
         }
     }
 
-    StatusCode::operator StatusCode::Variant() const
+    StatusCode::operator uint32_t() const
     {
-        return (this->_raw);
+        return (this->code);
     }
 }
