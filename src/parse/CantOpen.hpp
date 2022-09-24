@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CantRead.cpp                                       :+:      :+:    :+:   */
+/*   CantOpen.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/24 03:12:32 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 12:57:04 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/24 03:11:34 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/24 12:50:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CantRead.hpp"
+#pragma once
+
+#include "ft/Exception.hpp"
 
 namespace ws
 {
     namespace parse
     {
-        void CantRead::write(std::ostream& s) const
+        class CantOpen : public ft::Exception
         {
-            s << "error whilst reading";
-        }
+        public:
+            const char*     filename;
+
+            CantOpen(const char* filename);
+
+            void write(std::ostream& s) const;
+        };
     }
 }
