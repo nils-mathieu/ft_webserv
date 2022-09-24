@@ -6,10 +6,11 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 22:36:26 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 03:30:18 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "parse/read_to_string.hpp"
 #include "ft/log.hpp"
 #include "ft/sigint.hpp"
 #include "ft/Color.hpp"
@@ -20,11 +21,31 @@
 #include <iostream>
 
 /// @brief Like `main`, but can throw.
-int fallible_main(void)
+int fallible_main(int argc, char** argv)
 {
+    // =====================
+    //  Parse The Arguments
+    // =====================
+
+    if (argc <= 0)
+        return (2);
+    if (argc != 2)
+    {
+        ft::log::error()
+            << ft::log::Color::Red << ft::log::Color::Bold
+            << "invalid usage"
+            << ft::log::Color::Reset
+            << ": " << argv[0] << " [CONFIG.conf]"
+            << std::endl;
+        return (2);
+    }
+
     // ==================
     //  Parse The Config
     // ==================
+    std::string                             config_file;
+    ws::parse::read_file_to_string(argv[1], config_file);
+
     ws::Config              config;
 
     // ==========================
@@ -56,7 +77,7 @@ int fallible_main(void)
     return (0);
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
     // =========================
     //  Initialize Global State
@@ -68,7 +89,7 @@ int main(void)
 
     try
     {
-        return (fallible_main());
+        return (fallible_main(argc, argv));
     }
     catch (const ft::Exception& exception)
     {
