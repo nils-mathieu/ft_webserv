@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 03:03:11 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 03:30:10 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 03:35:38 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,8 @@ namespace ws
     {
         void read_to_string(std::istream& stream, std::string& s)
         {
-            char    buf[4096];
-
-            while (stream.read(buf, sizeof(buf)))
-                s.append(buf, sizeof(buf));
-            s.append(buf, stream.gcount());
+            std::istreambuf_iterator<char>   eos;
+            s = std::string(std::istreambuf_iterator<char>(stream), eos);
         }
 
         void read_file_to_string(const char* path, std::string& s)
