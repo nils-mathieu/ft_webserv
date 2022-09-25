@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:56:53 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 21:14:49 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "server/IndexOutcome.hpp"
 #include "server/RedirectOutcome.hpp"
 #include "server/DownloadOutcome.hpp"
+#include "server/DeleteOutcome.hpp"
 
 #include <iostream>
 #include <ctype.h>
@@ -198,6 +199,10 @@ namespace ws
             else if (directive == "download")
             {
                 scope.outcomes.push_back(new DownloadOutcome());
+            }
+            else if (directive == "delete")
+            {
+                scope.outcomes.push_back(new DeleteOutcome());
             }
             else if (directive == "scope")
             {
