@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:00:56 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 11:44:29 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 15:15:01 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,18 @@ namespace ws
         this->_repr._catch._new_code = new_code.code;
     }
 
+    void Outcome::set_redirect(ft::Str url)
+    {
+        this->_variant = Outcome::Redirect;
+        this->_repr._redirect[0] = url.begin();
+        this->_repr._redirect[1] = url.begin();
+    }
+
+    void Outcome::set_download()
+    {
+        this->_variant = Outcome::Download;
+    }
+
     Outcome::Variant Outcome::get_variant() const
     {
         return (this->_variant);
@@ -67,5 +79,10 @@ namespace ws
     StatusCode Outcome::get_catch_new_code() const
     {
         return (this->_repr._catch._new_code);
+    }
+
+    ft::Str Outcome::get_redirect() const
+    {
+        return (ft::Str(this->_repr._redirect[0], this->_repr._redirect[1]));
     }
 }
