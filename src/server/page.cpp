@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 11:51:15 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 12:09:11 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 14:59:51 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,13 +178,20 @@ namespace ws
 "           font-family: 'Noto Sans', sans-serif;\n"
 "       }\n"
 "\n"
+"       div {\n"
+"           position: absolute;\n"
+"           top: 50%;\n"
+"           left: 50%;\n"
+"           transform: translate(-50%, -50%);\n"
+"       }\n"
+"\n"
 "       h1 {\n"
-"           text-align: center;\n"
+"           text-transform: uppercase;\n"
 "       }\n"
 "   </style>\n"
 "   <body>\n"
-"       <div>"
-"           <h1>" << code.name() << " (" << code.code << ")" << "</h1>"
+"       <div id=\"container\">\n"
+"           <h1>" << code.name() << " (" << code.code << ")" << "</h1>\n"
 "       </div>\n"
 "   </body>\n"
 "</html>\n";

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 12:26:07 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 15:00:10 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ namespace ws
     void ServerConnection::parsed_invalid_http()
     {
         ft::log::info()
-            << "    💣 "
+            << "   💣 "
             << ft::log::Color::Red
             << "packet is not valid HTTP"
             << ft::log::Color::Reset
             << std::endl;
+
+        this->_response.set_status(StatusCode::BadRequest);
     }
 
     Connection::Flow ServerConnection::parsed_method(Method method)
@@ -61,13 +63,14 @@ namespace ws
         if (http_version != "HTTP/1.1")
         {
             ft::log::info()
-                << "    💣 "
+                << "   💣 "
                 << ft::log::Color::Yellow
                 << "HTTP version is '"
                 << http_version
                 << "'"
                 << ft::log::Color::Reset
                 << std::endl;
+            this->_response.set_status(StatusCode::BadRequest);
             return Connection::Close;
         }
         else
@@ -183,20 +186,6 @@ namespace ws
             this->_response.set_body(0);
         }
 
-        // If the above logic was not able to fill to body of the request,
-        // provide a simple default error page.
-        if (!this->_response.has_body())
-        {
-            ft::log::trace()
-                << ft::log::Color::Dim
-                << "      response body empty: generating error page"
-                << ft::log::Color::Reset
-                << std::endl;
-
-            std::string contents = page::default_error(this->_response.get_status());
-            this->_response.set_body(new StringBody(contents));
-        }
-
         return (Connection::Close);
     }
 
@@ -244,17 +233,29 @@ namespace ws
 
     Connection::Flow ServerConnection::send_more_body()
     {
+        // If the above logic was not able to fill to body of the request,
+        // provide a simple default error page.
+        if (!this->_response.has_body())
+        {
+            ft::log::trace()
+                << ft::log::Color::Dim
+                << "      response body empty: generating error page"
+                << ft::log::Color::Reset
+                << std::endl;
+
+            std::string contents = page::default_error(this->_response.get_status());
+            this->_response.set_body(new StringBody(contents));
+        }
+
         if (this->_response.send_body_through(*this))
             return (Connection::Continue);
-        else
-        {
-            ft::log::info()
-                << ft::log::Color::Bold
-                << ft::log::Color::Green
-                << "      upload done!"
-                << ft::log::Color::Reset
-                << std::endl << std::endl;
-            return (Connection::Close);
-        }
+
+        ft::log::info()
+            << ft::log::Color::Bold
+            << ft::log::Color::Green
+            << "      upload done!"
+            << ft::log::Color::Reset
+            << std::endl << std::endl;
+        return (Connection::Close);
     }
 }

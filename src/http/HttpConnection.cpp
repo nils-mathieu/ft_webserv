@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:59 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 21:55:47 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 14:50:11 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ namespace ws
                     else
                     {
                         this->parsed_invalid_http();
+                        this->start_response();
                         return (Connection::Close);
                     }
 

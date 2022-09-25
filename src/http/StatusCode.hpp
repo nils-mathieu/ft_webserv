@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 11:49:35 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 12:58:30 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ namespace ws
 
             Ok = 200,
 
+            BadRequest = 400,
             NotFound = 404,
+            MethodNotAllowed = 405,
 
             InternalServerError = 500,
         };
