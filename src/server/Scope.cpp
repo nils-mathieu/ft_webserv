@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:50:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 07:24:13 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 08:51:20 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,16 @@
 #include "FileBody.hpp"
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
+#include "GeneratedIndex.hpp"
 
 #include <unistd.h>
+#include <sys/stat.h>
 #include <string.h>
 
 namespace ws
 {
     Scope::Scope() :
+        exact_location(false),
         location(),
         added_methods(),
         removed_methods(),
@@ -30,6 +33,25 @@ namespace ws
         generate_index(false)
     {}
 
+    static bool starts_with(const char* a, const char* b)
+    {
+        while (*a && *b && *a == *b)
+        {
+            a++;
+            b++;
+        }
+        return (*b == '\0');
+    }
+
+
+    static bool can_open_file(const char* s)
+    {
+        struct stat st;
+        if (stat(s, &st) != 0)
+            return (false);
+        return (st.st_mode & S_IFREG);
+    }
+
     static bool try_respond_with_outcome(
         const Outcome& outcome,
         const char* uri,
@@ -38,17 +60,32 @@ namespace ws
     )
     {
         ft::log::trace()
-            << "          outcome `"
-            << ft::log::Color::Yellow
-            << outcome
+            << "        outcome `"
+            << ft::log::Color::Yellow;
+        if (outcome.get_variant() == Outcome::File)
+            ft::log::trace()
+                << "file "
+                << ft::log::Color::Dim
+                << outcome.get_file();
+        else if (outcome.get_variant() == Outcome::Root)
+            ft::log::trace()
+                << "root "
+                << ft::log::Color::Dim
+                << outcome.get_root();
+        else if (outcome.get_variant() == Outcome::Throw)
+            ft::log::trace()
+                << "throw "
+                << ft::log::Color::Dim
+                << outcome.get_throw().code;
+        ft::log::trace()
             << ft::log::Color::Reset
-            << ": ";
+            << "`: ";
 
         if (outcome.get_variant() == Outcome::File)
         {
             std::string s((char*)outcome.get_file().data(), outcome.get_file().size());
 
-            if (access(s.c_str(), R_OK) == -1)
+            if (!can_open_file(s.c_str()))
             {
                 ft::log::trace()
                     << ft::log::Color::Red
@@ -79,7 +116,7 @@ namespace ws
                 << ft::log::Color::Reset
                 << ": ";
 
-            if (access(s.c_str(), R_OK) == -1)
+            if (!can_open_file(s.c_str()))
             {
                 ft::log::trace()
                     << ft::log::Color::Red
@@ -149,22 +186,17 @@ namespace ws
         // ========================
 
         // ... if we are allowed to!
-        if (
-            !std::equal(
-                responding.location.begin(),
-                responding.location.end(),
-                request.uri.begin()
-            )
-        )
+        if (!starts_with(request.uri.c_str(), responding.location.c_str()))
         {
             responding.methods = original_methods;
             responding.location.resize(original_location_size);
             return (false);
         }
 
-        // If the location does not end with a `/`, then this is not a directory
-        // and the location must be matched *exactly*.
-        if (responding.location.size() != request.uri.size())
+        if (
+            this->exact_location
+            && responding.location.size() != request.uri.size()
+        )
         {
             responding.methods = original_methods;
             responding.location.resize(original_location_size);
@@ -183,12 +215,12 @@ namespace ws
         if ((responding.methods & (Methods)request.method) == 0)
         {
             ft::log::trace()
-                << "          method `"
+                << "        method `"
                 << ft::log::Color::Red
                 << request.method
                 << ft::log::Color::Reset
                 << "` not allowed" << std::endl
-                << "          "
+                << "        "
                 << ft::log::Color::Dim
                 << "allowed methods:"
                 << ft::log::Color::Green
@@ -222,6 +254,20 @@ namespace ws
 
                 it++;
             }
+        }
+
+        // If there was no outcome, we can still generate an index.
+        if (
+            *request.uri.rbegin() == '/'
+            && this->generate_index
+        )
+        {
+            ft::log::trace()
+                << "        can generate an index";
+
+            response.set_status(StatusCode::Ok);
+            response.set_body(new GeneratedIndex(".", request.uri.c_str()));
+            return (true);
         }
 
         // =============================

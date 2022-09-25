@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:47:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 18:04:39 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 07:45:45 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,30 @@ namespace ft
             }
 
             return (first);
+        }
+
+        // ========
+        //  Access
+        // ========
+
+        T&          first()
+        {
+            return (*this->_start);
+        }
+
+        const T&    first() const
+        {
+            return (*this->_start);
+        }
+
+        T&          last()
+        {
+            return (*(this->_end - 1));
+        }
+
+        const T&    last() const
+        {
+            return (*(this->_end - 1));
         }
 
         // ===========

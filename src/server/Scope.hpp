@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 06:20:19 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 08:00:44 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ namespace ws
     class Scope
     {
     public:
+        /// @brief Whether the location should be matched exactly.
+        bool                    exact_location;
         /// @brief The location of this scope.
         ft::Str                 location;
         /// @brief The methods allowed in that scope.

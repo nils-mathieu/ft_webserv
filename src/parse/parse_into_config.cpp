@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 06:21:21 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 08:07:13 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,15 @@ namespace ws
                     parser.throw_parsing_error("unknown HTTP method");
 
                 if (add)
+                {
                     scope.added_methods |= methods;
+                    scope.removed_methods &= ~methods;
+                }
                 else
+                {
+                    scope.added_methods &= ~methods;
                     scope.removed_methods |= methods;
+                }
             }
             else if (directive == "catch")
             {
@@ -216,9 +222,15 @@ namespace ws
             }
             else if (directive == "scope")
             {
+                if (!scope.location.empty() && scope.location.last() != '/')
+                    parser.throw_parsing_error("a file-scope cannot have children");
                 scope.children.push_back(Scope());
+                if (parser.get_char('='))
+                    scope.children.back().exact_location = true;
                 if (!parser.next_string(scope.children.back().location))
                     scope.children.back().location = ft::Str();
+                else if (scope.children.back().location.first() == '/')
+                    parser.throw_parsing_error("scope can't start with `/`");
                 if (!parser.get_char('{'))
                     parser.throw_parsing_error("expected `{`");
                 parser.assert_line_empty();
