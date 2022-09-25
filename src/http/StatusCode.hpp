@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 07:26:38 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 11:49:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ namespace ws
     public:
         StatusCode(Variant variant = Ok);
         StatusCode(uint32_t code);
+
+        /// @brief Returns whether this HTTP status code is known.
+        bool        is_known_code() const;
 
         /// @brief Computes the name of this status code.
         const char* name() const;

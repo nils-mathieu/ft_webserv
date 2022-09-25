@@ -1,31 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   GeneratedIndex.hpp                                 :+:      :+:    :+:   */
+/*   page.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/25 08:23:45 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 08:49:33 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/25 11:47:30 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/25 11:54:30 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "ft/Slice.hpp"
-#include "Response.hpp"
+#include "http/StatusCode.hpp"
+
+#include <string>
 
 namespace ws
 {
-    class GeneratedIndex : public ResponseBody
+    namespace page
     {
-        std::string     _page;
-        size_t          _sent;
-
-    public:
-        GeneratedIndex(const char* dir, const char* uri);
-
-        size_t  get_content_length() const;
-        bool    send_through(Connection& connection);
-    };
+        std::string generated_index(const char* path, const char* title);
+        std::string default_error(StatusCode code);
+    }
 }

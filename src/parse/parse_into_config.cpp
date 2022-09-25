@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 10:12:20 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 11:44:37 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,46 +134,28 @@ namespace ws
             else if (directive == "catch")
             {
                 ft::Str     word;
-                bool        all;
                 uint32_t    code;
 
                 parser.next_word(word);
-                if (word == "*")
-                    all = true;
-                else if (word.empty())
+                if (word.empty())
                     parser.throw_parsing_error("expected a status code");
-                else
-                {
-                    all = false;
-                    if (!ft::parse_str(word, code))
-                        parser.throw_parsing_error("invalid status code");
-                }
+                else if (!ft::parse_str(word, code))
+                    parser.throw_parsing_error("invalid status code");
 
                 ft::Str page;
                 if (!parser.next_string(page))
                     parser.throw_parsing_error("expected a string");
 
-                bool        has_new_code;
                 uint32_t    new_code;
 
                 parser.next_word(word);
                 if (word.empty())
-                    has_new_code = false;
-                else
-                {
-                    has_new_code = true;
-                    if (!ft::parse_str(word, new_code))
-                        parser.throw_parsing_error("invalid status code");
-                }
+                    new_code = UINT32_MAX;
+                else if (!ft::parse_str(word, new_code))
+                    parser.throw_parsing_error("invalid status code");
 
-                if (all && has_new_code)
-                    scope.catchers.push_back(Catcher(page, new_code));
-                else if (all && !has_new_code)
-                    scope.catchers.push_back(Catcher(page));
-                else if (!all && !has_new_code)
-                    scope.catchers.push_back(Catcher(code, page));
-                else if (!all && has_new_code)
-                    scope.catchers.push_back(Catcher(code, page, new_code));
+                scope.outcomes.push_back(Outcome());
+                scope.outcomes.back().set_catch(code, page, new_code);
             }
             else if (directive == "root")
             {
@@ -201,20 +183,6 @@ namespace ws
 
                 scope.outcomes.push_back(Outcome());
                 scope.outcomes.back().set_file(path);
-            }
-            else if (directive == "throw")
-            {
-                ft::Str     code_str;
-                uint32_t    code;
-
-                parser.next_word(code_str);
-                if (code_str.empty())
-                    parser.throw_parsing_error("expected a status code");
-                if (!ft::parse_str(code_str, code))
-                    parser.throw_parsing_error("invalid status code");
-
-                scope.outcomes.push_back(Outcome());
-                scope.outcomes.back().set_throw(StatusCode(code));
             }
             else if (directive == "scope")
             {

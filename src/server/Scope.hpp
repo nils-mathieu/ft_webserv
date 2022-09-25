@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 10:11:15 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 11:31:16 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "Methods.hpp"
 #include "http/StatusCode.hpp"
 #include "Outcome.hpp"
-#include "Catcher.hpp"
 #include "Response.hpp"
 #include "RequestHeader.hpp"
 #include "Responding.hpp"
@@ -43,8 +42,6 @@ namespace ws
         /// @brief The outcomes of this scope. The first matching outcome is
         /// used.
         std::vector<Outcome>    outcomes;
-        /// @brief The catchers defined for this scope.
-        std::vector<Catcher>    catchers;
 
     public:
         Scope();
@@ -59,7 +56,7 @@ namespace ws
         /// @param response The response that we are generating.
         ///
         /// @returns Whether the request could be processed and responded to.
-        bool try_respond(
+        bool    try_respond(
             const RequestHeader& request,
             Responding& responding,
             Response& response

@@ -6,14 +6,16 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 10:39:56 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 12:26:07 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
 #include "ServerConnection.hpp"
+#include "StringBody.hpp"
 #include "FileBody.hpp"
+#include "page.hpp"
 
 namespace ws
 {
@@ -89,7 +91,7 @@ namespace ws
         // =======================
 
         ft::log::info()
-            << "      "
+            << "   📢 "
             << ft::log::Color::Green
             << this->_header.method << " "
             << ft::log::Color::BrightYellow
@@ -151,9 +153,6 @@ namespace ws
                     << "server could not serve this request"
                     << ft::log::Color::Reset
                     << std::endl;
-
-                this->_response.set_status(StatusCode::InternalServerError);
-                this->_response.set_body(0);
             }
         }
         catch (const ft::Exception& e)
@@ -168,6 +167,7 @@ namespace ws
             ft::log::info() << std::endl;
 
             this->_response.set_status(StatusCode::InternalServerError);
+            this->_response.set_body(0);
         }
         catch (const std::exception& e)
         {
@@ -180,13 +180,23 @@ namespace ws
                 << std::endl;
 
             this->_response.set_status(StatusCode::InternalServerError);
+            this->_response.set_body(0);
         }
 
-        // =======================
-        //  Catch The Status Code
-        // =======================
+        // If the above logic was not able to fill to body of the request,
+        // provide a simple default error page.
+        if (!this->_response.has_body())
+        {
+            ft::log::trace()
+                << ft::log::Color::Dim
+                << "      response body empty: generating error page"
+                << ft::log::Color::Reset
+                << std::endl;
 
-        ft::log::info() << std::endl;
+            std::string contents = page::default_error(this->_response.get_status());
+            this->_response.set_body(new StringBody(contents));
+        }
+
         return (Connection::Close);
     }
 
@@ -198,6 +208,15 @@ namespace ws
 
     StatusCode ServerConnection::send_status_code()
     {
+        ft::log::info()
+            << "   📡 "
+            << ft::log::Color::Green
+            << this->_response.get_status().code
+            << " "
+            << ft::log::Color::Dim
+            << this->_response.get_status().name()
+            << ft::log::Color::Reset
+            << std::endl;
         return (this->_response.get_status());
     }
 
@@ -228,6 +247,14 @@ namespace ws
         if (this->_response.send_body_through(*this))
             return (Connection::Continue);
         else
+        {
+            ft::log::info()
+                << ft::log::Color::Bold
+                << ft::log::Color::Green
+                << "      upload done!"
+                << ft::log::Color::Reset
+                << std::endl << std::endl;
             return (Connection::Close);
+        }
     }
 }

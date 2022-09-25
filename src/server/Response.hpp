@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 18:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 21:39:30 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 12:03:24 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ namespace ws
 
         StatusCode      get_status() const;
         size_t          get_body_length() const;
+        bool            has_body() const;
 
         void            set_body(ResponseBody* body);
         void            set_status(StatusCode status);

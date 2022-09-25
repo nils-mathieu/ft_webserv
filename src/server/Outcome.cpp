@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:00:56 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 10:11:51 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 11:44:29 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,6 @@ namespace ws
     Outcome::Outcome() :
         _variant(Outcome::Dummy)
     {}
-
-    void Outcome::set_throw(StatusCode code)
-    {
-        this->_variant = Outcome::Throw;
-        this->_repr._throw = (uint32_t)code;
-    }
 
     void Outcome::set_file(ft::Str file_path)
     {
@@ -41,18 +35,37 @@ namespace ws
         this->_variant = Outcome::Index;
     }
 
+    void Outcome::set_catch(StatusCode code, ft::Str page, StatusCode new_code)
+    {
+        this->_variant = Outcome::Catch;
+        this->_repr._catch._code = code.code;
+        this->_repr._catch._page[0] = page.begin();
+        this->_repr._catch._page[1] = page.end();
+        this->_repr._catch._new_code = new_code.code;
+    }
+
     Outcome::Variant Outcome::get_variant() const
     {
         return (this->_variant);
     }
 
-    StatusCode Outcome::get_throw() const
-    {
-        return (StatusCode(this->_repr._throw));
-    }
-
     ft::Str Outcome::get_file() const
     {
         return (ft::Str(this->_repr._file[0], this->_repr._file[1]));
+    }
+
+    StatusCode Outcome::get_catch_code() const
+    {
+        return (this->_repr._catch._code);
+    }
+
+    ft::Str Outcome::get_catch_page() const
+    {
+        return (ft::Str(this->_repr._catch._page[0], this->_repr._catch._page[1]));
+    }
+
+    StatusCode Outcome::get_catch_new_code() const
+    {
+        return (this->_repr._catch._new_code);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 07:29:05 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 11:50:21 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,18 @@ namespace ws
         }
     }
 
+    bool StatusCode::is_known_code() const
+    {
+        return (fallible_name((StatusCode::Variant)this->code) != 0);
+    }
+
     const char* StatusCode::name() const
     {
         const char* ret = fallible_name((StatusCode::Variant)this->code);
         if (ret)
             return (ret);
         else
-            return ("<Other>");
+            return ("Unknown");
     }
 
     StatusCode::operator uint32_t() const

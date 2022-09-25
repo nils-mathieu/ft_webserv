@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 18:42:20 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 21:02:53 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 12:03:38 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,11 @@ namespace ws
             return (this->_body->get_content_length());
         else
             return (0);
+    }
+
+    bool Response::has_body() const
+    {
+        return (this->_body != 0);
     }
 
     void Response::set_body(ResponseBody* body)
