@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 19:52:40 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 21:36:03 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ namespace ws
             << std::endl;
 
         this->_responding.status = StatusCode::BadRequest;
-        this->_responding.set_response(0);
     }
 
     Connection::Flow ServerConnection::parsed_method(Method method)
@@ -71,7 +70,6 @@ namespace ws
                 << ft::log::Color::Reset
                 << std::endl;
             this->_responding.status = StatusCode::BadRequest;
-            this->_responding.set_response(0);
             return Connection::Close;
         }
         else
@@ -89,7 +87,6 @@ namespace ws
             if (!ft::parse_str(value, this->_header.length))
             {
                 this->_responding.status = StatusCode::BadRequest;
-                this->_responding.set_response(0);
                 return (Connection::Close);
             }
         }
@@ -167,21 +164,20 @@ namespace ws
         }
         catch (const ft::Exception& e)
         {
-            ft::log::info()
+            ft::log::error()
                 << "      "
                 << ft::log::Color::Red
                 << "error"
                 << ft::log::Color::Reset
                 << ": ";
-            e.write(ft::log::info());
-            ft::log::info() << std::endl;
+            e.write(ft::log::error());
+            ft::log::error() << std::endl;
 
             this->_responding.status = StatusCode::InternalServerError;
-            this->_responding.set_response(0);
         }
         catch (const std::exception& e)
         {
-            ft::log::info()
+            ft::log::error()
                 << "      "
                 << ft::log::Color::Red
                 << "error"
@@ -190,7 +186,6 @@ namespace ws
                 << std::endl;
 
             this->_responding.status = StatusCode::InternalServerError;
-            this->_responding.set_response(0);
         }
 
         if (this->_responding.get_reciever())

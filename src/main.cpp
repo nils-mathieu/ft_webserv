@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 19:44:50 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 21:34:27 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <string.h>
 
 /// @brief Opens enough socket to cover the address requested by the provided
 /// configuration.
@@ -59,17 +60,66 @@ void append_sockets(ws::Config& config, ws::AsyncExecutor& executor, std::vector
     }
 }
 
+static void print_usage_error(const char* arg0)
+{
+    ft::log::error()
+        << ft::log::Color::Red << ft::log::Color::Bold
+        << "invalid usage"
+        << ft::log::Color::Reset
+        << ": " << arg0 << " [--max-log-level LEVEL] [CONFIG]"
+        << std::endl;
+}
+
 /// @brief Like `main`, but can throw.
 int fallible_main(int argc, char** argv)
 {
     // =====================
     //  Parse The Arguments
     // =====================
-    const char* config_path;
+    const char*         config_path = 0;
+    ft::log::LogLevel   max_level = ft::log::Trace;
 
     if (argc <= 0)
         return (2);
-    if (argc == 1)
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--max-log-level") == 0)
+        {
+            i++;
+            if (i >= argc)
+            {
+                print_usage_error(argv[0]);
+                return (2);
+            }
+            if (strcmp(argv[i], "trace") == 0)
+                max_level = ft::log::Trace;
+            else if (strcmp(argv[i], "info") == 0)
+                max_level = ft::log::Info;
+            else if (strcmp(argv[i], "warn") == 0)
+                max_level = ft::log::Warn;
+            else if (strcmp(argv[i], "error") == 0)
+                max_level = ft::log::Error;
+            else
+            {
+                print_usage_error(argv[0]);
+                return (2);
+            }
+        }
+        else
+        {
+            if (config_path)
+            {
+                print_usage_error(argv[0]);
+                return (2);
+            }
+
+            config_path = argv[i];
+        }
+    }
+
+    ft::log::set_max_level(max_level);
+
+    if (!config_path)
     {
         ft::log::warn()
             << ft::log::Color::Yellow
@@ -81,20 +131,6 @@ int fallible_main(int argc, char** argv)
             << ft::log::Color::Reset
             << "`" << std::endl;
         config_path = "webserv.conf";
-    }
-    else if (argc == 2)
-    {
-        config_path = argv[1];
-    }
-    else
-    {
-        ft::log::error()
-            << ft::log::Color::Red << ft::log::Color::Bold
-            << "invalid usage"
-            << ft::log::Color::Reset
-            << ": " << argv[0] << " [CONFIG]"
-            << std::endl;
-        return (2);
     }
 
     // ==================
