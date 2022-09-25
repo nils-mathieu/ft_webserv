@@ -1,80 +1,75 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IndexOutcome.cpp                                   :+:      :+:    :+:   */
+/*   DownloadOutcome.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/25 16:26:51 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 19:08:25 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/25 18:18:51 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/25 19:58:32 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "IndexOutcome.hpp"
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
-#include "StringResponse.hpp"
-#include "page.hpp"
+#include "DownloadOutcome.hpp"
+#include "DownloadBody.hpp"
 
-#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 namespace ws
 {
-    static bool directory_exists(const char* s)
-    {
-        struct stat st;
-        if (stat(s, &st) != 0)
-            return (false);
-        return (st.st_mode & S_IFDIR);
-    }
-
-    bool IndexOutcome::try_respond(Responding& responding, const RequestHeader& request) const
+    bool DownloadOutcome::try_respond(Responding& responding, const RequestHeader& request) const
     {
         ft::log::trace()
-            << "      outcome `"
+            << "        outcome `"
             << ft::log::Color::Yellow
-            << "index"
+            << "download"
             << ft::log::Color::Reset
             << "`: ";
 
         std::string root = std::string((char*)responding.root.data(), responding.root.size());
         root.append(request.uri.c_str() + responding.location.size());
 
-        if (*root.rend() == '/')
+        if (request.length == 0)
         {
             ft::log::trace()
                 << ft::log::Color::Red
-                << "not a directory"
+                << "can't download file of size 0"
                 << ft::log::Color::Reset
                 << std::endl;
+            responding.status = StatusCode::LengthRequired;
             return (false);
         }
 
-        if (!directory_exists(root.c_str()))
+        // Create the file in advance to check whether the operation is
+        // actually possible.
+        int fd = open(root.c_str(), O_APPEND | O_CREAT, S_IWUSR | S_IRUSR);
+        if (fd == -1)
         {
             ft::log::trace()
                 << ft::log::Color::Red
-                << "`"
+                << "can't create `"
                 << root
-                << "` not found"
+                << "`"
                 << ft::log::Color::Reset
                 << std::endl;
-            responding.status = StatusCode::NotFound;
+            responding.status = StatusCode::Conflict;
             return (false);
         }
+        close(fd);
 
         ft::log::trace()
-            << "generating index for `"
+            << "created `"
             << ft::log::Color::Yellow
             << root
             << ft::log::Color::Reset
             << "`"
             << std::endl;
 
-        std::string generated_index = page::generated_index(root.c_str(), request.uri.c_str());
-
         responding.status = StatusCode::Ok;
-        responding.set_response(new StringResponse(generated_index));
+        responding.set_reciever(new DownloadBody(root.c_str()));
         return (true);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:54:43 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 18:45:07 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ namespace ws
         case StatusCode::BadRequest: return "Bad Request";
         case StatusCode::NotFound: return "Not Found";
         case StatusCode::MethodNotAllowed: return "Method Not Allowed";
+        case StatusCode::Conflict: return "Conflict";
+        case StatusCode::LengthRequired: return "Length Required";
         case StatusCode::InternalServerError: return "Internal Server Error";
         default: return (0);
         }

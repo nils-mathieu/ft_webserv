@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:45:25 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 18:56:53 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "server/ExploreOutcome.hpp"
 #include "server/IndexOutcome.hpp"
 #include "server/RedirectOutcome.hpp"
+#include "server/DownloadOutcome.hpp"
 
 #include <iostream>
 #include <ctype.h>
@@ -193,6 +194,10 @@ namespace ws
                     parser.throw_parsing_error("expected a string");
 
                 scope.outcomes.push_back(new RedirectOutcome(url));
+            }
+            else if (directive == "download")
+            {
+                scope.outcomes.push_back(new DownloadOutcome());
             }
             else if (directive == "scope")
             {

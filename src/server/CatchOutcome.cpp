@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:29:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:41:41 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 19:08:54 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ namespace ws
                 << std::endl;
 
             responding.status = StatusCode::NotFound;
-            responding.set_response(0);
             return (false);
         }
 

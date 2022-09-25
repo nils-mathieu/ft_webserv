@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHeader.cpp                                  :+:      :+:    :+:   */
+/*   DownloadBody.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 14:17:06 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:06:20 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/25 18:00:12 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/25 19:01:12 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RequestHeader.hpp"
+#include "BodyReciever.hpp"
+
+#include <fstream>
 
 namespace ws
 {
-    RequestHeader::RequestHeader() :
-        method(Method::Get),
-        uri(),
-        host(),
-        length(0)
-    {}
+    class DownloadBody : public BodyReciever
+    {
+    private:
+        size_t          _written;
+        std::ofstream   _stream;
+
+    public:
+        DownloadBody(const char* path);
+
+        Connection::Flow recieve_body(ft::Str body_part, const RequestHeader& header);
+    };
 }

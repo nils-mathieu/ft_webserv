@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:50:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:24:42 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 19:08:11 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ namespace ws
                 << ft::log::Color::Reset
                 << std::endl;
 
+            responding.status = StatusCode::MethodNotAllowed;
             responding.methods = original_methods;
             responding.location.resize(original_location_size);
             responding.root = original_root;

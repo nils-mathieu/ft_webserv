@@ -1,23 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHeader.cpp                                  :+:      :+:    :+:   */
+/*   DownloadOutcome.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 14:17:06 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:06:20 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/25 18:18:04 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/25 19:00:22 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RequestHeader.hpp"
+#pragma once
+
+#include "Outcome.hpp"
 
 namespace ws
 {
-    RequestHeader::RequestHeader() :
-        method(Method::Get),
-        uri(),
-        host(),
-        length(0)
-    {}
+    class DownloadOutcome : public Outcome
+    {
+    public:
+        bool    try_respond(Responding& responding, const RequestHeader& request) const;
+    };
 }

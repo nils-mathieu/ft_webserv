@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:12:35 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 19:52:40 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,15 @@ namespace ws
     {
         if (key == "Host")
             this->_header.host = std::string((char*)value.data(), value.size());
-
+        else if (key == "Content-Length")
+        {
+            if (!ft::parse_str(value, this->_header.length))
+            {
+                this->_responding.status = StatusCode::BadRequest;
+                this->_responding.set_response(0);
+                return (Connection::Close);
+            }
+        }
         return (Connection::Continue);
     }
 
@@ -185,13 +193,18 @@ namespace ws
             this->_responding.set_response(0);
         }
 
-        return (Connection::Close);
+        if (this->_responding.get_reciever())
+            return (Connection::Continue);
+        else
+            return (Connection::Close);
     }
 
     Connection::Flow ServerConnection::recieved_more_body(ft::Str body_part)
     {
-        (void)body_part;
-        return (Connection::Close);
+        // The reciever shouldn't be null because we checked in `parsed_header`
+        // that it wasn't. The connection would've been closed already if it
+        // wasn't the case.
+        return (this->_responding.get_reciever()->recieve_body(body_part, this->_header));
     }
 
     StatusCode ServerConnection::send_status_code()
