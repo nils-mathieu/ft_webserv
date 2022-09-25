@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:25:30 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:45:25 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "server/CatchOutcome.hpp"
 #include "server/ExploreOutcome.hpp"
 #include "server/IndexOutcome.hpp"
+#include "server/RedirectOutcome.hpp"
 
 #include <iostream>
 #include <ctype.h>
@@ -183,6 +184,15 @@ namespace ws
                     parser.throw_parsing_error("expected a string");
 
                 scope.outcomes.push_back(new FileOutcome(path));
+            }
+            else if (directive == "redirect")
+            {
+                ft::Str url;
+
+                if (!parser.next_string(url))
+                    parser.throw_parsing_error("expected a string");
+
+                scope.outcomes.push_back(new RedirectOutcome(url));
             }
             else if (directive == "scope")
             {

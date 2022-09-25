@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:25:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:46:25 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:41:45 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ namespace ws
     bool ExploreOutcome::try_respond(Responding& responding, const RequestHeader& request) const
     {
         ft::log::trace()
+            << "      outcome `"
+            << ft::log::Color::Yellow
             << "explore"
             << ft::log::Color::Reset
             << "`: ";

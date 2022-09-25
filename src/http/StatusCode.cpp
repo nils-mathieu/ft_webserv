@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 12:58:25 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:54:43 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ namespace ws
         {
         case StatusCode::Continue: return "Continue";
         case StatusCode::Ok: return "OK";
+        case StatusCode::MovedPermanently: return "Moved Permanently";
+        case StatusCode::Found: return "Found";
+        case StatusCode::TemporaryRedirect: return "Temporary Redirect";
         case StatusCode::BadRequest: return "Bad Request";
         case StatusCode::NotFound: return "Not Found";
         case StatusCode::MethodNotAllowed: return "Method Not Allowed";
@@ -53,14 +56,5 @@ namespace ws
     StatusCode::operator uint32_t() const
     {
         return (this->code);
-    }
-
-    std::ostream& operator<<(std::ostream& stream, const StatusCode& code)
-    {
-        const char* ret = fallible_name((StatusCode::Variant)code.code);
-        if (ret)
-            return stream << ret;
-        else
-            return stream << code.code;
     }
 }

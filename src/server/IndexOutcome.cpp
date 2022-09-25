@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:26:51 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:48:12 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:41:52 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ namespace ws
     bool IndexOutcome::try_respond(Responding& responding, const RequestHeader& request) const
     {
         ft::log::trace()
+            << "      outcome `"
+            << ft::log::Color::Yellow
             << "index"
             << ft::log::Color::Reset
             << "`: ";

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:20:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:47:10 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:41:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ namespace ws
         (void)request;
 
         ft::log::trace()
+            << "      outcome `"
+            << ft::log::Color::Yellow
             << "file "
             << ft::log::Color::Dim
             << this->_file
