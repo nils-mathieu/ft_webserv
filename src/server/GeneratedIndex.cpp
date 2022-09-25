@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 08:25:11 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 09:33:59 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 10:38:50 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include <dirent.h>
 #include <sstream>
+#include <string.h>
 
 namespace ws
 {
@@ -116,10 +117,35 @@ namespace ws
 "   <body>\n"
 "       <div id=\"container\">\n";
 
+        std::string new_uri = uri;
         while ((ent = readdir(dir)) != 0)
         {
-            s <<
-"            <a class=\"" << get_class_for_type(ent->d_type) << "\" href=\"\">" << ent->d_name << "</a>\n";
+            size_t original_size = new_uri.size();
+            ft::Str new_uri_ref;
+
+            if (strcmp(ent->d_name, ".") == 0)
+                new_uri_ref = ft::Str((uint8_t*)new_uri.data(), new_uri.size());
+            else if (strcmp(ent->d_name, "..") == 0)
+            {
+                for (int i = (int)new_uri.size() - 2; i >= 0; i--)
+                {
+                   if (new_uri[i] == '/')
+                    {
+                        new_uri_ref = ft::Str((uint8_t*)new_uri.data(), i + 1);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                new_uri.append(ent->d_name);
+                new_uri_ref = ft::Str((uint8_t*)new_uri.data(), new_uri.size());
+            }
+
+                s <<
+"            <a class=\"" << get_class_for_type(ent->d_type) << "\" href=\"" << new_uri_ref << "\">" << ent->d_name << "</a>\n";
+
+            new_uri.resize(original_size);
         }
 
         s <<

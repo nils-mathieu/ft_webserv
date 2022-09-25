@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:00:56 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 07:32:20 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 10:11:51 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,14 @@ namespace ws
         this->_repr._file[1] = file_path.end();
     }
 
-    void Outcome::set_root(ft::Str root_path)
+    void Outcome::set_explore()
     {
-        this->_variant = Outcome::Root;
-        this->_repr._root[0] = root_path.begin();
-        this->_repr._root[1] = root_path.end();
+        this->_variant = Outcome::Explore;
+    }
+
+    void Outcome::set_index()
+    {
+        this->_variant = Outcome::Index;
     }
 
     Outcome::Variant Outcome::get_variant() const
@@ -51,24 +54,5 @@ namespace ws
     ft::Str Outcome::get_file() const
     {
         return (ft::Str(this->_repr._file[0], this->_repr._file[1]));
-    }
-
-    ft::Str Outcome::get_root() const
-    {
-        return (ft::Str(this->_repr._root[0], this->_repr._root[1]));
-    }
-
-    std::ostream& operator<<(std::ostream& stream, const Outcome& outcome)
-    {
-        if (outcome.get_variant() == Outcome::Dummy)
-            return stream << "Dummy";
-        else if (outcome.get_variant() == Outcome::File)
-            return stream << "file \"" << outcome.get_file() << "\"";
-        else if (outcome.get_variant() == Outcome::Root)
-            return stream << "root \"" << outcome.get_root() << "\"";
-        else if (outcome.get_variant() == Outcome::Throw)
-            return stream << "throw " << outcome.get_throw().code;
-        else
-            return stream;
     }
 }

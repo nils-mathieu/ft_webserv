@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 05:58:03 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 05:58:33 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 10:02:56 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ namespace ws
 {
     Responding::Responding() :
         location("/"),
-        methods(ws::Methods::All)
+        methods(ws::Methods::All),
+        root()
     {}
 }

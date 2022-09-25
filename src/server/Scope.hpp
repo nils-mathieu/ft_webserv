@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 08:00:44 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 10:11:15 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ namespace ws
         bool                    exact_location;
         /// @brief The location of this scope.
         ft::Str                 location;
+        /// @brief The root of this scope. When empty, use the parent's root.
+        ft::Str                 root;
         /// @brief The methods allowed in that scope.
         Methods                 added_methods;
         /// @brief The methods disallowed in that scope.
@@ -43,9 +45,6 @@ namespace ws
         std::vector<Outcome>    outcomes;
         /// @brief The catchers defined for this scope.
         std::vector<Catcher>    catchers;
-        /// @brief Whether an index should be generated when accessing a
-        /// directory.
-        bool                    generate_index;
 
     public:
         Scope();

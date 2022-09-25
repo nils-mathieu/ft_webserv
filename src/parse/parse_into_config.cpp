@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 08:07:13 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 10:12:20 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,24 +177,20 @@ namespace ws
             }
             else if (directive == "root")
             {
-                ft::Str directory;
-
-                if (!parser.next_string(directory))
+                if (!parser.next_string(scope.root))
                     parser.throw_parsing_error("expected a string");
+                else if (scope.root.last() != '/')
+                    parser.throw_parsing_error("scope roots must end with `/`");
+            }
+            else if (directive == "explore")
+            {
                 scope.outcomes.push_back(Outcome());
-                scope.outcomes.back().set_root(directory);
+                scope.outcomes.back().set_explore();
             }
             else if (directive == "index")
             {
-                ft::Str word;
-
-                parser.next_word(word);
-                if (word == "on")
-                    scope.generate_index = true;
-                else if (word == "off")
-                    scope.generate_index = false;
-                else
-                    parser.throw_parsing_error("expected `on` or `off`");
+                scope.outcomes.push_back(Outcome());
+                scope.outcomes.back().set_index();
             }
             else if (directive == "file")
             {

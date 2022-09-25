@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 07:34:06 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 10:39:56 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ namespace ws
             {
                 // The server block could not respond to the request.
                 // This is an configuration error.
-                ft::log::error()
+                ft::log::info()
                     << "   💣 "
                     << ft::log::Color::Red
                     << "server could not serve this request"
@@ -186,6 +186,7 @@ namespace ws
         //  Catch The Status Code
         // =======================
 
+        ft::log::info() << std::endl;
         return (Connection::Close);
     }
 
