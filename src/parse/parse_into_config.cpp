@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 18:10:55 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 06:21:21 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,9 @@ namespace ws
                     parser.throw_parsing_error("unknown HTTP method");
 
                 if (add)
-                    scope.methods |= methods;
+                    scope.added_methods |= methods;
                 else
-                    scope.methods &= ~methods;
+                    scope.removed_methods |= methods;
             }
             else if (directive == "catch")
             {

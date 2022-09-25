@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:40:31 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:50:33 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 21:55:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ namespace ws
         /// @brief Gets another HTTP header field for the response.
         ///
         /// @returns Whether a field was actually provided.
-        virtual bool                send_next_header(ft::Str& key, ft::Str& value) = 0;
+        virtual bool                send_next_header(std::string& key, std::string& value) = 0;
 
         /// @brief Indicates that more of the body is ready to be sent.
         ///

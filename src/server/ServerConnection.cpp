@@ -6,13 +6,14 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 00:09:37 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 07:34:06 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
 #include "ServerConnection.hpp"
+#include "FileBody.hpp"
 
 namespace ws
 {
@@ -24,10 +25,11 @@ namespace ws
         HttpConnection(raw_fd),
         _config(config),
         _address(address),
-        _header()
+        _header(),
+        _response(),
+        _header_state(0)
     {
         ft::log::info() << " 📦 packet recieved at " << address << std::endl;
-        (void)_config;
     }
 
     void ServerConnection::parsed_invalid_http()
@@ -58,7 +60,7 @@ namespace ws
         {
             ft::log::info()
                 << "    💣 "
-                << ft::log::Color::Red
+                << ft::log::Color::Yellow
                 << "HTTP version is '"
                 << http_version
                 << "'"
@@ -82,6 +84,10 @@ namespace ws
 
     Connection::Flow ServerConnection::parsed_header()
     {
+        // =======================
+        //  Select A Server Block
+        // =======================
+
         ft::log::info()
             << "      "
             << ft::log::Color::Green
@@ -95,8 +101,16 @@ namespace ws
             << ft::log::Color::Reset
             << std::endl;
 
-        const ServerBlock* server_block = this->_config.get_server_block(this->_address, ft::make_str(this->_header.host.data(), this->_header.host.size()));
+        const ServerBlock* server_block = this->_config.get_server_block(
+            this->_address,
+            ft::make_str(
+                this->_header.host.data(),
+                this->_header.host.size()
+            )
+        );
 
+        // This should actually never happen. A socket listening for that ID
+        // wouldn't have been opened if it wasn't for at least one server.
         if (!server_block)
         {
             ft::log::info()
@@ -105,16 +119,72 @@ namespace ws
                 << "no server for this request"
                 << ft::log::Color::Reset
                 << std::endl;
+
+            this->_response.set_status(StatusCode::InternalServerError);
+
             return (Connection::Close);
         }
 
         ft::log::trace()
-            << "      selected server "
+            << "      selected `"
             << ft::log::Color::Yellow
             << server_block->label
             << ft::log::Color::Reset
-            << " to serve this request"
+            << "` to serve this request"
             << std::endl;
+
+        // =====================================================
+        //  Use The Selected Server Block To Server The Request
+        // =====================================================
+
+        try
+        {
+            Responding  responding;
+
+            if (!server_block->try_respond(this->_header, responding, this->_response))
+            {
+                // The server block could not respond to the request.
+                // This is an configuration error.
+                ft::log::error()
+                    << "   💣 "
+                    << ft::log::Color::Red
+                    << "server could not serve this request"
+                    << ft::log::Color::Reset
+                    << std::endl;
+
+                this->_response.set_status(StatusCode::InternalServerError);
+                this->_response.set_body(0);
+            }
+        }
+        catch (const ft::Exception& e)
+        {
+            ft::log::info()
+                << "      "
+                << ft::log::Color::Red
+                << "error"
+                << ft::log::Color::Reset
+                << ": ";
+            e.write(ft::log::info());
+            ft::log::info() << std::endl;
+
+            this->_response.set_status(StatusCode::InternalServerError);
+        }
+        catch (const std::exception& e)
+        {
+            ft::log::info()
+                << "      "
+                << ft::log::Color::Red
+                << "error"
+                << ft::log::Color::Reset
+                << ": " << e.what()
+                << std::endl;
+
+            this->_response.set_status(StatusCode::InternalServerError);
+        }
+
+        // =======================
+        //  Catch The Status Code
+        // =======================
 
         return (Connection::Close);
     }
@@ -127,18 +197,36 @@ namespace ws
 
     StatusCode ServerConnection::send_status_code()
     {
-        return (StatusCode::Ok);
+        return (this->_response.get_status());
     }
 
-    bool ServerConnection::send_next_header(ft::Str& key, ft::Str& value)
+    bool ServerConnection::send_next_header(std::string& key, std::string& value)
     {
-        (void)key;
-        (void)value;
-        return (false);
+        while (true)
+        {
+            if (this->_header_state == 0)
+            {
+
+                this->_header_state++;
+                size_t  length = this->_response.get_body_length();
+                if (length)
+                {
+                    uint8_t buf[32];
+                    key = "Content-Length";
+                    value = std::string((char*)buf, ft::write_int(length, buf));
+                    return (true);
+                }
+            }
+            else
+                return (false);
+        }
     }
 
     Connection::Flow ServerConnection::send_more_body()
     {
-        return (Connection::Close);
+        if (this->_response.send_body_through(*this))
+            return (Connection::Continue);
+        else
+            return (Connection::Close);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 17:38:21 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 06:20:19 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 #include "http/StatusCode.hpp"
 #include "Outcome.hpp"
 #include "Catcher.hpp"
+#include "Response.hpp"
+#include "RequestHeader.hpp"
+#include "Responding.hpp"
 
 #include <vector>
 
@@ -28,9 +31,9 @@ namespace ws
         /// @brief The location of this scope.
         ft::Str                 location;
         /// @brief The methods allowed in that scope.
-        Methods                 methods;
-        /// @brief The status code that should be returned in case of success.
-        StatusCode              status;
+        Methods                 added_methods;
+        /// @brief The methods disallowed in that scope.
+        Methods                 removed_methods;
         /// @brief Child scopes to be traversed before this one.
         std::vector<Scope>      children;
         /// @brief The outcomes of this scope. The first matching outcome is
@@ -44,5 +47,21 @@ namespace ws
 
     public:
         Scope();
+
+        /// @brief Tries to process the provided request.
+        ///
+        /// @param request The request we are responding to.
+        ///
+        /// @param responding A state that's kept around while processing the
+        /// request.
+        ///
+        /// @param response The response that we are generating.
+        ///
+        /// @returns Whether the request could be processed and responded to.
+        bool try_respond(
+            const RequestHeader& request,
+            Responding& responding,
+            Response& response
+        ) const;
     };
 }

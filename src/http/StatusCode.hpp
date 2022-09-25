@@ -6,13 +6,14 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 17:18:20 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 07:26:38 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <stdint.h>
+#include <ostream>
 
 namespace ws
 {
@@ -26,6 +27,8 @@ namespace ws
             Ok = 200,
 
             NotFound = 404,
+
+            InternalServerError = 500,
         };
 
         uint32_t     code;
@@ -39,4 +42,6 @@ namespace ws
 
         operator uint32_t() const;
     };
+
+    std::ostream& operator<<(std::ostream& stream, const StatusCode& code);
 }

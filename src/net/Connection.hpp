@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:36:02 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:40:57 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 21:27:27 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ namespace ws
         PollTypes       interest() const;
         bool            poll(PollTypes types);
 
-    protected:
+    public:
         // ============================
         //  sending and recieving data
         // ============================

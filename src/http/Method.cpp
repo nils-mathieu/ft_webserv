@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:45:33 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 23:06:53 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 06:27:39 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,11 @@ namespace ws
         case Method::Trace: return "TRACE";
         default: return "<INVALID>";
         }
+    }
+
+    Method::operator uint32_t() const
+    {
+        return (this->_raw);
     }
 
     std::ostream& operator<<(std::ostream& s, Method method)

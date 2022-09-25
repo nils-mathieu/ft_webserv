@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:00:56 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 17:25:19 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 07:32:20 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,19 @@ namespace ws
     ft::Str Outcome::get_root() const
     {
         return (ft::Str(this->_repr._root[0], this->_repr._root[1]));
+    }
+
+    std::ostream& operator<<(std::ostream& stream, const Outcome& outcome)
+    {
+        if (outcome.get_variant() == Outcome::Dummy)
+            return stream << "Dummy";
+        else if (outcome.get_variant() == Outcome::File)
+            return stream << "file \"" << outcome.get_file() << "\"";
+        else if (outcome.get_variant() == Outcome::Root)
+            return stream << "root \"" << outcome.get_root() << "\"";
+        else if (outcome.get_variant() == Outcome::Throw)
+            return stream << "throw " << outcome.get_throw().code;
+        else
+            return stream;
     }
 }

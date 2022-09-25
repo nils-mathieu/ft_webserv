@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:59 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 22:40:52 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 21:55:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ namespace ws
         this->_data.clear();
 
         StatusCode  status_code = this->send_status_code();
-        ft::Str     key;
-        ft::Str     value;
 
         this->_data.reserve(128);
 
@@ -62,6 +60,8 @@ namespace ws
 
         // Write the headers.
 
+        std::string key;
+        std::string value;
         while (this->send_next_header(key, value))
         {
             // key + size + ':' + ' ' + '\r' + '\n'
@@ -74,7 +74,6 @@ namespace ws
             this->_data.assume_filled(value.size());
             strcpy((char*)this->_data.read_buffer(), "\r\n");
             this->_data.assume_filled(2);
-
         }
 
         // End of the header.

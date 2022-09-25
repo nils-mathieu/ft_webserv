@@ -6,11 +6,13 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:44:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 17:10:53 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 07:11:58 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include "http/Method.hpp"
 
 #include <stdint.h>
 
@@ -39,13 +41,16 @@ namespace ws
 
     public:
         Methods(Variants raw = None);
+        explicit Methods(Method method);
 
         operator Variants() const;
 
-        Methods operator&(Methods other) const;
-        void operator&=(Methods other);
-        Methods operator|(Methods other) const;
-        void operator|=(Methods other);
-        Methods operator~() const;
+        Methods     operator&(Methods other) const;
+        void        operator&=(Methods other);
+        Methods     operator|(Methods other) const;
+        void        operator|=(Methods other);
+        Methods     operator~() const;
     };
+
+    std::ostream& operator<<(std::ostream& stream, const Methods& methods);
 }

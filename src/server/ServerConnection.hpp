@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:51:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 22:11:37 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/24 21:55:02 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "net/SocketAddress.hpp"
 #include "net/Connection.hpp"
 #include "RequestHeader.hpp"
+#include "Response.hpp"
 #include "Config.hpp"
 
 namespace ws
@@ -29,6 +30,15 @@ namespace ws
 
         /// @brief This header is populated whilst being created.
         RequestHeader   _header;
+
+        /// @brief The response header.
+        Response        _response;
+
+        /// @brief A number that indicates the key-value pair that needs to
+        /// be returned by the `get_next_header` function.
+        //
+        // 0 - Content-Lenght
+        size_t          _header_state;
 
     public:
         ServerConnection(
@@ -50,7 +60,7 @@ namespace ws
         Connection::Flow    recieved_more_body(ft::Str body_part);
 
         StatusCode          send_status_code();
-        bool                send_next_header(ft::Str& key, ft::Str& value);
+        bool                send_next_header(std::string& key, std::string& value);
         Connection::Flow    send_more_body();
     };
 }
