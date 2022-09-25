@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   FileBody.cpp                                       :+:      :+:    :+:   */
+/*   FileResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 21:10:55 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 05:31:19 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 15:45:51 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "FileBody.hpp"
+#include "FileResponse.hpp"
 #include "ft/GenericException.hpp"
 #include "ft/Color.hpp"
+#include "ft/Slice.hpp"
 
 #include <sstream>
 
 namespace ws
 {
-    FileBody::FileBody(const char* path) :
+    FileResponse::FileResponse(const char* path) :
         _length(0),
         _stream(),
         _sent(0),
         _init(0),
-        _buf()
+        _buf(),
+        _sent_content_length(false)
     {
         this->_stream.open(path, std::ifstream::ate | std::ifstream::binary | std::ifstream::in);
 
@@ -55,12 +57,18 @@ namespace ws
         }
     }
 
-    size_t FileBody::get_content_length() const
+    bool FileResponse::next_header_field(std::string& key, std::string& value)
     {
-        return (this->_length);
+        if (this->_length == 0 || this->_sent_content_length)
+            return (false);
+        this->_sent_content_length = true;
+        key = "Content-Length";
+        uint8_t buf[32];
+        value = std::string((char*)buf, ft::write_int(this->_length, buf));
+        return (true);
     }
 
-    bool FileBody::send_through(Connection& connection)
+    bool FileResponse::send_more_body_through(Connection& connection)
     {
         if (this->_sent == this->_init)
         {

@@ -6,15 +6,15 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 15:00:10 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 16:12:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
 #include "ServerConnection.hpp"
-#include "StringBody.hpp"
-#include "FileBody.hpp"
+#include "StringResponse.hpp"
+#include "FileResponse.hpp"
 #include "page.hpp"
 
 namespace ws
@@ -28,8 +28,7 @@ namespace ws
         _config(config),
         _address(address),
         _header(),
-        _response(),
-        _header_state(0)
+        _responding()
     {
         ft::log::info() << " 📦 packet recieved at " << address << std::endl;
     }
@@ -43,7 +42,8 @@ namespace ws
             << ft::log::Color::Reset
             << std::endl;
 
-        this->_response.set_status(StatusCode::BadRequest);
+        this->_responding.status = StatusCode::BadRequest;
+        this->_responding.set_response(0);
     }
 
     Connection::Flow ServerConnection::parsed_method(Method method)
@@ -70,7 +70,8 @@ namespace ws
                 << "'"
                 << ft::log::Color::Reset
                 << std::endl;
-            this->_response.set_status(StatusCode::BadRequest);
+            this->_responding.status = StatusCode::BadRequest;
+            this->_responding.set_response(0);
             return Connection::Close;
         }
         else
@@ -125,7 +126,7 @@ namespace ws
                 << ft::log::Color::Reset
                 << std::endl;
 
-            this->_response.set_status(StatusCode::InternalServerError);
+            this->_responding.status = StatusCode::InternalServerError;
 
             return (Connection::Close);
         }
@@ -144,9 +145,7 @@ namespace ws
 
         try
         {
-            Responding  responding;
-
-            if (!server_block->try_respond(this->_header, responding, this->_response))
+            if (!server_block->try_respond(this->_header, this->_responding))
             {
                 // The server block could not respond to the request.
                 // This is an configuration error.
@@ -169,8 +168,8 @@ namespace ws
             e.write(ft::log::info());
             ft::log::info() << std::endl;
 
-            this->_response.set_status(StatusCode::InternalServerError);
-            this->_response.set_body(0);
+            this->_responding.status = StatusCode::InternalServerError;
+            this->_responding.set_response(0);
         }
         catch (const std::exception& e)
         {
@@ -182,8 +181,8 @@ namespace ws
                 << ": " << e.what()
                 << std::endl;
 
-            this->_response.set_status(StatusCode::InternalServerError);
-            this->_response.set_body(0);
+            this->_responding.status = StatusCode::InternalServerError;
+            this->_responding.set_response(0);
         }
 
         return (Connection::Close);
@@ -197,45 +196,7 @@ namespace ws
 
     StatusCode ServerConnection::send_status_code()
     {
-        ft::log::info()
-            << "   📡 "
-            << ft::log::Color::Green
-            << this->_response.get_status().code
-            << " "
-            << ft::log::Color::Dim
-            << this->_response.get_status().name()
-            << ft::log::Color::Reset
-            << std::endl;
-        return (this->_response.get_status());
-    }
-
-    bool ServerConnection::send_next_header(std::string& key, std::string& value)
-    {
-        while (true)
-        {
-            if (this->_header_state == 0)
-            {
-
-                this->_header_state++;
-                size_t  length = this->_response.get_body_length();
-                if (length)
-                {
-                    uint8_t buf[32];
-                    key = "Content-Length";
-                    value = std::string((char*)buf, ft::write_int(length, buf));
-                    return (true);
-                }
-            }
-            else
-                return (false);
-        }
-    }
-
-    Connection::Flow ServerConnection::send_more_body()
-    {
-        // If the above logic was not able to fill to body of the request,
-        // provide a simple default error page.
-        if (!this->_response.has_body())
+        if (!this->_responding.get_response())
         {
             ft::log::trace()
                 << ft::log::Color::Dim
@@ -243,11 +204,31 @@ namespace ws
                 << ft::log::Color::Reset
                 << std::endl;
 
-            std::string contents = page::default_error(this->_response.get_status());
-            this->_response.set_body(new StringBody(contents));
+            std::string contents = page::default_error(this->_responding.status);
+            this->_responding.set_response(new StringResponse(contents));
         }
 
-        if (this->_response.send_body_through(*this))
+        ft::log::info()
+            << "   📡 "
+            << ft::log::Color::Green
+            << this->_responding.status.code
+            << " "
+            << ft::log::Color::Dim
+            << this->_responding.status.name()
+            << ft::log::Color::Reset
+            << std::endl;
+
+        return (this->_responding.status);
+    }
+
+    bool ServerConnection::send_next_header(std::string& key, std::string& value)
+    {
+        return this->_responding.get_response()->next_header_field(key, value);
+    }
+
+    Connection::Flow ServerConnection::send_more_body()
+    {
+        if (this->_responding.get_response()->send_more_body_through(*this))
             return (Connection::Continue);
 
         ft::log::info()

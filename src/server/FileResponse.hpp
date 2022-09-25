@@ -1,31 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StringBody.hpp                                     :+:      :+:    :+:   */
+/*   FileResponse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/25 08:23:45 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 11:58:45 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/24 21:06:05 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/25 15:45:41 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "ft/Slice.hpp"
 #include "Response.hpp"
+
+#include <fstream>
 
 namespace ws
 {
-    class StringBody : public ResponseBody
+    class FileResponse : public Response
     {
-        std::string     _page;
+        size_t          _length;
+        std::ifstream   _stream;
         size_t          _sent;
+        size_t          _init;
+        uint8_t         _buf[4096];
+        bool            _sent_content_length;
+
 
     public:
-        StringBody(const std::string& string);
+        FileResponse(const char* path);
 
-        size_t  get_content_length() const;
-        bool    send_through(Connection& connection);
+        bool    next_header_field(std::string& key, std::string& value);
+        bool    send_more_body_through(Connection& conn);
     };
 }

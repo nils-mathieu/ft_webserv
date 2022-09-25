@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 11:31:16 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 16:08:40 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,7 @@ namespace ws
         /// @returns Whether the request could be processed and responded to.
         bool    try_respond(
             const RequestHeader& request,
-            Responding& responding,
-            Response& response
+            Responding& responding
         ) const;
     };
 }

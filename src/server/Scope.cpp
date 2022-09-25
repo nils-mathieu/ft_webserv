@@ -6,16 +6,16 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:50:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 11:58:17 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 16:09:22 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Scope.hpp"
-#include "FileBody.hpp"
+#include "FileResponse.hpp"
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
 #include "page.hpp"
-#include "StringBody.hpp"
+#include "StringResponse.hpp"
 
 #include <unistd.h>
 #include <sys/stat.h>
@@ -62,10 +62,8 @@ namespace ws
 
     static bool try_respond_with_outcome(
         const Outcome& outcome,
-        std::string& root,
         const char* uri,
-        const char* location,
-        Response& response
+        Responding& responding
     )
     {
         ft::log::trace()
@@ -81,7 +79,7 @@ namespace ws
                 << ft::log::Color::Reset
                 << "`: ";
 
-            size_t  original_size = root.size();
+            std::string root = std::string((char*)responding.root.data(), responding.root.size());
             root.append((char*)outcome.get_file().data(), outcome.get_file().size());
 
             if (!regular_file_exists(root.c_str()))
@@ -94,9 +92,8 @@ namespace ws
                     << ft::log::Color::Reset
                     << std::endl;
 
-                root.resize(original_size);
-                response.set_status(StatusCode::NotFound);
-                response.set_body(0);
+                responding.status = StatusCode::NotFound;
+                responding.set_response(0);
                 return (false);
             }
 
@@ -108,9 +105,8 @@ namespace ws
                 << "` found!"
                 << std::endl;
 
-            response.set_status(StatusCode::Ok);
-            response.set_body(new FileBody(root.c_str()));
-            root.resize(original_size);
+            responding.status = StatusCode::Ok;
+            responding.set_response(new FileResponse(root.c_str()));
             return (true);
         }
         else if (outcome.get_variant() == Outcome::Explore)
@@ -120,8 +116,8 @@ namespace ws
                 << ft::log::Color::Reset
                 << "`: ";
 
-            size_t  original_size = root.size();
-            root.append(uri + strlen(location));
+            std::string root = std::string((char*)responding.root.data(), responding.root.size());
+            root.append(uri + responding.location.size());
 
             if (!regular_file_exists(root.c_str()))
             {
@@ -133,9 +129,8 @@ namespace ws
                     << ft::log::Color::Reset
                     << std::endl;
 
-                root.resize(original_size);
-                response.set_status(StatusCode::NotFound);
-                response.set_body(0);
+                responding.status = StatusCode::NotFound;
+                responding.set_response(0);
                 return (false);
             }
 
@@ -147,9 +142,8 @@ namespace ws
                 << "` found!"
                 << std::endl;
 
-            response.set_status(StatusCode::Ok);
-            response.set_body(new FileBody(root.c_str()));
-            root.resize(original_size);
+            responding.status = StatusCode::Ok;
+            responding.set_response(new FileResponse(root.c_str()));
             return (true);
         }
         else if (outcome.get_variant() == Outcome::Index)
@@ -159,8 +153,8 @@ namespace ws
                 << ft::log::Color::Reset
                 << "`: ";
 
-            size_t  original_size = root.size();
-            root.append(uri + strlen(location));
+            std::string root = std::string((char*)responding.root.data(), responding.root.size());
+            root.append(uri + responding.location.size());
 
             if (*root.rend() == '/')
             {
@@ -169,7 +163,6 @@ namespace ws
                     << "not a directory"
                     << ft::log::Color::Reset
                     << std::endl;
-                root.resize(original_size);
                 return (false);
             }
 
@@ -182,9 +175,8 @@ namespace ws
                     << "` not found"
                     << ft::log::Color::Reset
                     << std::endl;
-                root.resize(original_size);
-                response.set_status(StatusCode::NotFound);
-                response.set_body(0);
+                responding.status = StatusCode::NotFound;
+                responding.set_response(0);
                 return (false);
             }
 
@@ -198,9 +190,8 @@ namespace ws
 
             std::string generated_index = page::generated_index(root.c_str(), uri);
 
-            response.set_body(new StringBody(generated_index));
-            response.set_status(StatusCode::Ok);
-            root.resize(original_size);
+            responding.status = StatusCode::Ok;
+            responding.set_response(new StringResponse(generated_index));
             return (true);
         }
         else if (outcome.get_variant() == Outcome::Catch)
@@ -213,18 +204,18 @@ namespace ws
                 << "`: ";
 
 
-            if (outcome.get_catch_code().code != response.get_status().code)
+            if (outcome.get_catch_code().code != responding.status.code)
             {
                 ft::log::trace()
                     << "not right status ("
-                    << response.get_status().code
+                    << responding.status.code
                     << ")"
                     << std::endl;
                 return (false);
             }
 
             // CAUGHT IN 4K!!
-            size_t original_size = root.size();
+            std::string root = std::string((char*)responding.root.data(), responding.root.size());
             root.append((char*)outcome.get_catch_page().data(), outcome.get_catch_page().size());
 
             if (!regular_file_exists(root.c_str()))
@@ -237,9 +228,8 @@ namespace ws
                     << ft::log::Color::Reset
                     << std::endl;
 
-                response.set_body(0);
-                response.set_status(StatusCode::NotFound);
-                root.resize(original_size);
+                responding.status = StatusCode::NotFound;
+                responding.set_response(0);
                 return (false);
             }
 
@@ -251,25 +241,23 @@ namespace ws
                 << "` found"
                 << std::endl;
 
-            response.set_body(new FileBody(root.c_str()));
+            responding.set_response(new FileResponse(root.c_str()));
             StatusCode code = outcome.get_catch_new_code();
             if (code.code != UINT32_MAX)
-                response.set_status(code);
-            root.resize(original_size);
+                responding.status = code;
             return (true);
         }
         else
         {
-            response.set_status(StatusCode::InternalServerError);
-            response.set_body(0);
+            responding.status = StatusCode::InternalServerError;
+            responding.set_response(0);
             return (false);
         }
     }
 
     bool Scope::try_respond(
         const RequestHeader& request,
-        Responding& responding,
-        Response& response
+        Responding& responding
     ) const
     {
         // This is kept around to truncate the aggregated location later.
@@ -292,7 +280,7 @@ namespace ws
             std::vector<Scope>::const_iterator  it = this->children.begin();
             while (it != this->children.end())
             {
-                if (it->try_respond(request, responding, response))
+                if (it->try_respond(request, responding))
                 {
                     responding.location.resize(original_location_size);
                     responding.methods = original_methods;
@@ -362,17 +350,14 @@ namespace ws
 
         // Check if we have a defined outcome for this request.
         {
-            std::string root_buf((char*)responding.root.data(), responding.root.size());
             std::vector<Outcome>::const_iterator it = this->outcomes.begin();
             while (it != this->outcomes.end())
             {
                 if (
                     try_respond_with_outcome(
                         *it,
-                        root_buf,
                         request.uri.c_str(),
-                        responding.location.c_str(),
-                        response
+                        responding
                     )
                 )
                 {

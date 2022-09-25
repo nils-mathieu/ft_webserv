@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:51:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 21:55:02 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 15:28:13 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,8 @@ namespace ws
         /// @brief This header is populated whilst being created.
         RequestHeader   _header;
 
-        /// @brief The response header.
-        Response        _response;
-
-        /// @brief A number that indicates the key-value pair that needs to
-        /// be returned by the `get_next_header` function.
-        //
-        // 0 - Content-Lenght
-        size_t          _header_state;
+        /// @brief The state that's kept around when processing the request.
+        Responding      _responding;
 
     public:
         ServerConnection(
