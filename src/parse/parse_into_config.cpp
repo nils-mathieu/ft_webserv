@@ -6,13 +6,17 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 11:44:37 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:25:30 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse_into_config.hpp"
 #include "ParseException.hpp"
 #include "LineParser.hpp"
+#include "server/FileOutcome.hpp"
+#include "server/CatchOutcome.hpp"
+#include "server/ExploreOutcome.hpp"
+#include "server/IndexOutcome.hpp"
 
 #include <iostream>
 #include <ctype.h>
@@ -154,8 +158,7 @@ namespace ws
                 else if (!ft::parse_str(word, new_code))
                     parser.throw_parsing_error("invalid status code");
 
-                scope.outcomes.push_back(Outcome());
-                scope.outcomes.back().set_catch(code, page, new_code);
+                scope.outcomes.push_back(new CatchOutcome(code, page, new_code));
             }
             else if (directive == "root")
             {
@@ -166,13 +169,11 @@ namespace ws
             }
             else if (directive == "explore")
             {
-                scope.outcomes.push_back(Outcome());
-                scope.outcomes.back().set_explore();
+                scope.outcomes.push_back(new ExploreOutcome());
             }
             else if (directive == "index")
             {
-                scope.outcomes.push_back(Outcome());
-                scope.outcomes.back().set_index();
+                scope.outcomes.push_back(new IndexOutcome());
             }
             else if (directive == "file")
             {
@@ -181,25 +182,24 @@ namespace ws
                 if (!parser.next_string(path))
                     parser.throw_parsing_error("expected a string");
 
-                scope.outcomes.push_back(Outcome());
-                scope.outcomes.back().set_file(path);
+                scope.outcomes.push_back(new FileOutcome(path));
             }
             else if (directive == "scope")
             {
                 if (!scope.location.empty() && scope.location.last() != '/')
                     parser.throw_parsing_error("a file-scope cannot have children");
-                scope.children.push_back(Scope());
+                scope.children.push_back(new Scope());
                 if (parser.get_char('='))
-                    scope.children.back().exact_location = true;
-                if (!parser.next_string(scope.children.back().location))
-                    scope.children.back().location = ft::Str();
-                else if (scope.children.back().location.first() == '/')
+                    scope.children.back()->exact_location = true;
+                if (!parser.next_string(scope.children.back()->location))
+                    scope.children.back()->location = ft::Str();
+                else if (scope.children.back()->location.first() == '/')
                     parser.throw_parsing_error("scope can't start with `/`");
                 if (!parser.get_char('{'))
                     parser.throw_parsing_error("expected `{`");
                 parser.assert_line_empty();
 
-                parse_into_scope(scope.children.back(), parser);
+                parse_into_scope(*scope.children.back(), parser);
             }
             else
                 return (false);
@@ -247,13 +247,13 @@ namespace ws
                 if (!parser.get_keyword("server"))
                     parser.throw_parsing_error("expected `server`");
 
-                config.blocks.push_back(ServerBlock());
-                parser.next_string(config.blocks.back().label);
+                config.blocks.push_back(new ServerBlock());
+                parser.next_string(config.blocks.back()->label);
                 if (!parser.get_char('{'))
                     parser.throw_parsing_error("expected `{`");
                 parser.assert_line_empty();
 
-                parse_into_server_block(config.blocks.back(), parser);
+                parse_into_server_block(*config.blocks.back(), parser);
             }
         }
     }

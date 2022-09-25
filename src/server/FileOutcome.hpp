@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Outcome.hpp                                        :+:      :+:    :+:   */
+/*   FileOutcome.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 12:53:08 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:38:00 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/25 16:18:24 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/25 16:37:11 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "ft/Slice.hpp"
-#include "http/StatusCode.hpp"
-#include "Response.hpp"
 #include "Responding.hpp"
-#include "RequestHeader.hpp"
+#include "Outcome.hpp"
 
 namespace ws
 {
-    class Outcome
+    class FileOutcome : public Outcome
     {
-    public:
-        virtual ~Outcome();
+        ft::Str     _file;
 
-        virtual bool    try_respond(Responding& responding, const RequestHeader& request) const = 0;
+    public:
+        FileOutcome(ft::Str file);
+
+        bool try_respond(Responding& responding, const RequestHeader& request) const;
     };
 }

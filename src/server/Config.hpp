@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 14:19:26 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 23:40:48 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:26:01 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,11 @@ namespace ws
     {
     public:
         /// @brief The server blocks defined for this server.
-        std::vector<ServerBlock>    blocks;
+        std::vector<ServerBlock*>    blocks;
 
     public:
+        ~Config();
+
         // =================
         //  Utility Methods
         // =================

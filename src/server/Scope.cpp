@@ -6,20 +6,13 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:50:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:09:22 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:24:42 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Scope.hpp"
-#include "FileResponse.hpp"
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
-#include "page.hpp"
-#include "StringResponse.hpp"
-
-#include <unistd.h>
-#include <sys/stat.h>
-#include <string.h>
 
 namespace ws
 {
@@ -33,6 +26,21 @@ namespace ws
         outcomes()
     {}
 
+    Scope::~Scope()
+    {
+        while (!this->outcomes.empty())
+        {
+            delete this->outcomes.back();
+            this->outcomes.pop_back();
+        }
+
+        while (!this->children.empty())
+        {
+            delete this->children.back();
+            this->children.pop_back();
+        }
+    }
+
     static bool starts_with(const char* a, const char* b)
     {
         while (*a && *b && *a == *b)
@@ -41,218 +49,6 @@ namespace ws
             b++;
         }
         return (*b == '\0');
-    }
-
-
-    static bool regular_file_exists(const char* s)
-    {
-        struct stat st;
-        if (stat(s, &st) != 0)
-            return (false);
-        return (st.st_mode & S_IFREG);
-    }
-
-    static bool directory_exists(const char* s)
-    {
-        struct stat st;
-        if (stat(s, &st) != 0)
-            return (false);
-        return (st.st_mode & S_IFDIR);
-    }
-
-    static bool try_respond_with_outcome(
-        const Outcome& outcome,
-        const char* uri,
-        Responding& responding
-    )
-    {
-        ft::log::trace()
-            << "        outcome `"
-            << ft::log::Color::Yellow;
-
-        if (outcome.get_variant() == Outcome::File)
-        {
-            ft::log::trace()
-                << "file "
-                << ft::log::Color::Dim
-                << outcome.get_file()
-                << ft::log::Color::Reset
-                << "`: ";
-
-            std::string root = std::string((char*)responding.root.data(), responding.root.size());
-            root.append((char*)outcome.get_file().data(), outcome.get_file().size());
-
-            if (!regular_file_exists(root.c_str()))
-            {
-                ft::log::trace()
-                    << ft::log::Color::Red
-                    << "`"
-                    << root
-                    << "` not found"
-                    << ft::log::Color::Reset
-                    << std::endl;
-
-                responding.status = StatusCode::NotFound;
-                responding.set_response(0);
-                return (false);
-            }
-
-            ft::log::trace()
-                << "`"
-                << ft::log::Color::Yellow
-                << root
-                << ft::log::Color::Reset
-                << "` found!"
-                << std::endl;
-
-            responding.status = StatusCode::Ok;
-            responding.set_response(new FileResponse(root.c_str()));
-            return (true);
-        }
-        else if (outcome.get_variant() == Outcome::Explore)
-        {
-            ft::log::trace()
-                << "explore"
-                << ft::log::Color::Reset
-                << "`: ";
-
-            std::string root = std::string((char*)responding.root.data(), responding.root.size());
-            root.append(uri + responding.location.size());
-
-            if (!regular_file_exists(root.c_str()))
-            {
-                ft::log::trace()
-                    << ft::log::Color::Red
-                    << "`"
-                    << root
-                    << "` not found"
-                    << ft::log::Color::Reset
-                    << std::endl;
-
-                responding.status = StatusCode::NotFound;
-                responding.set_response(0);
-                return (false);
-            }
-
-            ft::log::trace()
-                << "`"
-                << ft::log::Color::Yellow
-                << root
-                << ft::log::Color::Reset
-                << "` found!"
-                << std::endl;
-
-            responding.status = StatusCode::Ok;
-            responding.set_response(new FileResponse(root.c_str()));
-            return (true);
-        }
-        else if (outcome.get_variant() == Outcome::Index)
-        {
-            ft::log::trace()
-                << "index"
-                << ft::log::Color::Reset
-                << "`: ";
-
-            std::string root = std::string((char*)responding.root.data(), responding.root.size());
-            root.append(uri + responding.location.size());
-
-            if (*root.rend() == '/')
-            {
-                ft::log::trace()
-                    << ft::log::Color::Red
-                    << "not a directory"
-                    << ft::log::Color::Reset
-                    << std::endl;
-                return (false);
-            }
-
-            if (!directory_exists(root.c_str()))
-            {
-                ft::log::trace()
-                    << ft::log::Color::Red
-                    << "`"
-                    << root
-                    << "` not found"
-                    << ft::log::Color::Reset
-                    << std::endl;
-                responding.status = StatusCode::NotFound;
-                responding.set_response(0);
-                return (false);
-            }
-
-            ft::log::trace()
-                << "generating index for `"
-                << ft::log::Color::Yellow
-                << root
-                << ft::log::Color::Reset
-                << "`"
-                << std::endl;
-
-            std::string generated_index = page::generated_index(root.c_str(), uri);
-
-            responding.status = StatusCode::Ok;
-            responding.set_response(new StringResponse(generated_index));
-            return (true);
-        }
-        else if (outcome.get_variant() == Outcome::Catch)
-        {
-            ft::log::trace()
-                << "catch "
-                << ft::log::Color::Dim
-                << outcome.get_catch_code().code
-                << ft::log::Color::Reset
-                << "`: ";
-
-
-            if (outcome.get_catch_code().code != responding.status.code)
-            {
-                ft::log::trace()
-                    << "not right status ("
-                    << responding.status.code
-                    << ")"
-                    << std::endl;
-                return (false);
-            }
-
-            // CAUGHT IN 4K!!
-            std::string root = std::string((char*)responding.root.data(), responding.root.size());
-            root.append((char*)outcome.get_catch_page().data(), outcome.get_catch_page().size());
-
-            if (!regular_file_exists(root.c_str()))
-            {
-                ft::log::trace()
-                    << ft::log::Color::Red
-                    << "`"
-                    << root
-                    << "` not found"
-                    << ft::log::Color::Reset
-                    << std::endl;
-
-                responding.status = StatusCode::NotFound;
-                responding.set_response(0);
-                return (false);
-            }
-
-            ft::log::trace()
-                << "`"
-                << ft::log::Color::Yellow
-                << root
-                << ft::log::Color::Reset
-                << "` found"
-                << std::endl;
-
-            responding.set_response(new FileResponse(root.c_str()));
-            StatusCode code = outcome.get_catch_new_code();
-            if (code.code != UINT32_MAX)
-                responding.status = code;
-            return (true);
-        }
-        else
-        {
-            responding.status = StatusCode::InternalServerError;
-            responding.set_response(0);
-            return (false);
-        }
     }
 
     bool Scope::try_respond(
@@ -277,10 +73,10 @@ namespace ws
         // ==========================================
 
         {
-            std::vector<Scope>::const_iterator  it = this->children.begin();
+            std::vector<Scope*>::const_iterator  it = this->children.begin();
             while (it != this->children.end())
             {
-                if (it->try_respond(request, responding))
+                if ((*it)->try_respond(request, responding))
                 {
                     responding.location.resize(original_location_size);
                     responding.methods = original_methods;
@@ -350,16 +146,10 @@ namespace ws
 
         // Check if we have a defined outcome for this request.
         {
-            std::vector<Outcome>::const_iterator it = this->outcomes.begin();
+            std::vector<Outcome*>::const_iterator it = this->outcomes.begin();
             while (it != this->outcomes.end())
             {
-                if (
-                    try_respond_with_outcome(
-                        *it,
-                        request.uri.c_str(),
-                        responding
-                    )
-                )
+                if ((*it)->try_respond(responding, request))
                 {
                     responding.methods = original_methods;
                     responding.location.resize(original_location_size);

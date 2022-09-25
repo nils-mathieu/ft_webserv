@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Outcome.hpp                                        :+:      :+:    :+:   */
+/*   CatchOutcome.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 12:53:08 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:38:00 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/25 16:28:22 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/25 16:43:52 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "ft/Slice.hpp"
-#include "http/StatusCode.hpp"
-#include "Response.hpp"
-#include "Responding.hpp"
-#include "RequestHeader.hpp"
+#include "Outcome.hpp"
 
 namespace ws
 {
-    class Outcome
+    class CatchOutcome : public Outcome
     {
-    public:
-        virtual ~Outcome();
+        StatusCode  _caught;
+        ft::Str     _page;
+        StatusCode  _returned;
 
-        virtual bool    try_respond(Responding& responding, const RequestHeader& request) const = 0;
+    public:
+        CatchOutcome(StatusCode caught, ft::Str page, StatusCode returned = UINT32_MAX);
+
+        bool try_respond(Responding& responding, const RequestHeader& request) const;
     };
 }

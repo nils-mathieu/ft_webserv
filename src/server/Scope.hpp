@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:08:40 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:23:56 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,14 @@ namespace ws
         /// @brief The methods disallowed in that scope.
         Methods                 removed_methods;
         /// @brief Child scopes to be traversed before this one.
-        std::vector<Scope>      children;
+        std::vector<Scope*>      children;
         /// @brief The outcomes of this scope. The first matching outcome is
         /// used.
-        std::vector<Outcome>    outcomes;
+        std::vector<Outcome*>    outcomes;
 
     public:
         Scope();
+        ~Scope();
 
         /// @brief Tries to process the provided request.
         ///

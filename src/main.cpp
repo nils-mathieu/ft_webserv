@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 22:04:34 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/25 17:22:03 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@
 /// configuration.
 void append_sockets(ws::Config& config, ws::AsyncExecutor& executor, std::vector<ws::RespondWithServer>& responders)
 {
-    std::vector<ws::ServerBlock>::const_iterator begin = config.blocks.begin();
-    std::vector<ws::ServerBlock>::const_iterator end = config.blocks.end();
-    std::vector<ws::ServerBlock>::const_iterator it1 = begin;
-    std::vector<ws::ServerBlock>::const_iterator it2;
+    std::vector<ws::ServerBlock*>::const_iterator begin = config.blocks.begin();
+    std::vector<ws::ServerBlock*>::const_iterator end = config.blocks.end();
+    std::vector<ws::ServerBlock*>::const_iterator it1 = begin;
+    std::vector<ws::ServerBlock*>::const_iterator it2;
 
     while (it1 != end)
     {
@@ -41,7 +41,7 @@ void append_sockets(ws::Config& config, ws::AsyncExecutor& executor, std::vector
         it2 = begin;
         while (it2 != it1)
         {
-            if (it2->address == it1->address)
+            if ((*it2)->address == (*it1)->address)
             {
                 found = true;
                 break;
@@ -51,8 +51,8 @@ void append_sockets(ws::Config& config, ws::AsyncExecutor& executor, std::vector
 
         if (!found)
         {
-            responders.push_back(ws::RespondWithServer(executor, config, it1->address));
-            executor.append(new ws::Socket(it1->address, responders.back()));
+            responders.push_back(ws::RespondWithServer(executor, config, (*it1)->address));
+            executor.append(new ws::Socket((*it1)->address, responders.back()));
         }
 
         it1++;
