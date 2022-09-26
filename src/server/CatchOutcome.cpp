@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:29:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 21:17:43 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 10:00:23 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,20 @@ namespace ws
             << "        outcome `"
             << ft::log::Color::Yellow
             << "catch "
-            << ft::log::Color::Dim
-            << this->_caught.code
+            << ft::log::Color::Dim;
+        if (this->_caught.code == UINT32_MAX)
+            ft::log::trace() << "*";
+        else
+            ft::log::trace() << this->_caught.code;
+        ft::log::trace()
             << ft::log::Color::Reset
             << "`: ";
 
 
-        if (this->_caught.code != responding.status.code)
+        if (
+            this->_caught.code != UINT32_MAX
+            && this->_caught.code != responding.status.code
+        )
         {
             ft::log::trace()
                 << "not right status ("

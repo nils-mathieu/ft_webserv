@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 09:22:43 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 10:01:53 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,11 +143,16 @@ namespace ws
                 ft::Str     word;
                 uint32_t    code = 0;
 
-                parser.next_word(word);
-                if (word.empty())
-                    parser.throw_parsing_error("expected a status code");
-                else if (!ft::parse_str(word, code))
-                    parser.throw_parsing_error("invalid status code");
+                if (parser.get_char('*'))
+                    code = UINT32_MAX;
+                else
+                {
+                    parser.next_word(word);
+                    if (word.empty())
+                        parser.throw_parsing_error("expected a status code");
+                    else if (!ft::parse_str(word, code))
+                        parser.throw_parsing_error("invalid status code");
+                }
 
                 ft::Str page;
                 if (!parser.next_string(page))
