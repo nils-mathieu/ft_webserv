@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 12:36:20 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 13:31:37 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@ namespace ws
         if (!this->_responding.get_response())
         {
             ft::log::trace()
-                << "      response body empty: generating error page"
+                << "      response body empty: generating default page"
                 << std::endl;
 
             std::string contents = page::default_error(this->_responding.status);

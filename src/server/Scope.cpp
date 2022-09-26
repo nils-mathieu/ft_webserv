@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:50:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 19:08:11 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 13:29:59 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,15 @@ namespace ws
         if (!this->root.empty())
             responding.root = this->root;
 
+        // Check if the request is for us.
+        if (!starts_with(request.uri.c_str(), responding.location.c_str()))
+        {
+            responding.methods = original_methods;
+            responding.location.resize(original_location_size);
+            responding.root = original_root;
+            return (false);
+        }
+
         // ==========================================
         //  Check If One Of The Children Can Respond
         // ==========================================
@@ -93,14 +102,6 @@ namespace ws
         // ========================
 
         // ... if we are allowed to!
-        if (!starts_with(request.uri.c_str(), responding.location.c_str()))
-        {
-            responding.methods = original_methods;
-            responding.location.resize(original_location_size);
-            responding.root = original_root;
-            return (false);
-        }
-
         if (
             this->exact_location
             && responding.location.size() != request.uri.size()
