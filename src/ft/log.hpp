@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 14:22:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 19:04:02 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 12:30:09 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ namespace ft
         /// @brief Sets the max verbosity level.
         void                set_max_level(LogLevel level);
 
+        /// @brief Logs an incredibly verbose message.
+        std::ostream&       details();
         /// @brief Logs very verbose message.
         std::ostream&       trace();
         /// @brief Logs an informational message.

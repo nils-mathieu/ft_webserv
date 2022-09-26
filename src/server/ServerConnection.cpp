@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 12:20:38 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 12:33:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ namespace ws
         {
             ft::log::info()
                 << "   💣 "
-                << ft::log::Color::Yellow
+                << ft::log::Color::Red
                 << "HTTP version is '"
                 << http_version
                 << "'"
@@ -81,6 +81,12 @@ namespace ws
 
     Connection::Flow ServerConnection::parsed_header_field(ft::Str key, ft::Str value)
     {
+        ft::log::details()
+            << ft::log::Color::Dim
+            << key
+            << ": "
+            << value
+            << std::endl;
         if (key == "Host")
             this->_header.host = std::string((char*)value.data(), value.size());
         else if (key == "Content-Length")
@@ -108,22 +114,10 @@ namespace ws
                 {
                     val = value.slice(begin, i);
                     begin = i + 1;
-                    ft::log::trace()
-                        << ft::log::Color::Blue
-                        << ft::log::Color::Dim
-                        << "      cookie " << name << "=" << val
-                        << ft::log::Color::Reset
-                        << std::endl;
                     this->_header.cookies[std::string((char*)name.data(), name.size())] = std::string((char*)val.data(), val.size());
                 }
             }
             val = value.slice(begin, value.size());
-            ft::log::trace()
-                << ft::log::Color::Blue
-                << ft::log::Color::Dim
-                << "      cookie " << name << "=" << val
-                << ft::log::Color::Reset
-                << std::endl;
             this->_header.cookies[std::string((char*)name.data(), name.size())] = std::string((char*)val.data(), val.size());
         }
 
@@ -148,6 +142,20 @@ namespace ws
             << this->_header.host
             << ft::log::Color::Reset
             << std::endl;
+
+        {
+            std::map<std::string, std::string>::const_iterator it = this->_header.cookies.begin();
+            while (it != this->_header.cookies.end())
+            {
+                ft::log::trace()
+                    << ft::log::Color::Blue
+                    << ft::log::Color::Dim
+                    << "        cookie " << it->first << "=" << it->second
+                    << ft::log::Color::Reset
+                    << std::endl;
+                it++;
+            }
+        }
 
         const ServerBlock* server_block = this->_config.get_server_block(
             this->_address,
@@ -244,9 +252,7 @@ namespace ws
         if (!this->_responding.get_response())
         {
             ft::log::trace()
-                << ft::log::Color::Dim
                 << "      response body empty: generating error page"
-                << ft::log::Color::Reset
                 << std::endl;
 
             std::string contents = page::default_error(this->_responding.status);

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 14:37:00 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 19:03:56 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 12:30:33 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ namespace ft
                 return _sink_stream;
             else
                 return std::clog;
+        }
+
+        std::ostream& details()
+        {
+            return log_with_level(Details);
         }
 
         std::ostream& trace()

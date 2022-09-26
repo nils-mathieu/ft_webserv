@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 21:34:27 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 12:32:12 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,9 @@ int fallible_main(int argc, char** argv)
                 print_usage_error(argv[0]);
                 return (2);
             }
-            if (strcmp(argv[i], "trace") == 0)
+            if (strcmp(argv[i], "details") == 0)
+                max_level = ft::log::Details;
+            else if (strcmp(argv[i], "trace") == 0)
                 max_level = ft::log::Trace;
             else if (strcmp(argv[i], "info") == 0)
                 max_level = ft::log::Info;
