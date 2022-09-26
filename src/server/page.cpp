@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 11:51:15 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 12:22:35 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 13:20:53 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,25 @@ namespace ws
 "           content: \"❓\";\n"
 "           margin-right: 5px;\n"
 "       }\n"
+"\n"
+"       #upload-button {\n"
+"           color: black;\n"
+"           border: none;\n"
+"           padding: 0.3em 1em;\n"
+"           border-radius: 0.5em;\n"
+"           background: white;\n"
+"           cursor: pointer;\n"
+"\n"
+"           transition: 0.2s;\n"
+"       }\n"
+"\n"
+"       #upload-button:hover {\n"
+"           background: rgba(0, 0, 0, 0.05);\n"
+"       }\n"
+"\n"
+"       #upload-button:active {\n"
+"           background: rgba(0, 0, 0, 0.1);\n"
+"       }\n"
 "   </style>\n"
 "   <body>\n"
 "       <div id=\"container\">\n";
@@ -151,9 +170,39 @@ namespace ws
             }
 
             s <<
-"       </div>"
-"   </body>"
-"</html>";
+"           <button id=\"upload-button\">+</button>\n"
+"       </div>\n"
+"\n"
+"       <input id=\"upload-file-input\" type=\"file\" style=\"display: none;\" />\n"
+"   </body>\n"
+"   <script>\n"
+"       let upload_button = document.querySelector(\"#upload-button\")\n"
+"       let input = document.querySelector(\"#upload-file-input\")\n"
+"\n"
+"       upload_button.onclick = () => {\n"
+"           input.click()\n"
+"\n"
+"       }\n"
+"\n"
+"       input.onchange = () => {\n"
+"           if (input.files.length == 0)\n"
+"               return\n"
+"           let file = input.files[0]\n"
+"\n"
+"           let form_data = new FormData()\n"
+"           form_data.append(file.name, file)\n"
+"\n"
+"           console.log(`POST: ${window.location.pathname + file.name}`)\n"
+"           fetch(window.location.pathname + file.name, {\n"
+"               method: \"POST\",\n"
+"               body: form_data,\n"
+"           })\n"
+"           .then(() => {\n"
+"               location.reload()\n"
+"           })\n"
+"       }\n"
+"   </script>\n"
+"</html>\n";
             closedir(dir);
 
             return (s.str());
