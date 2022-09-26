@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHeader.cpp                                  :+:      :+:    :+:   */
+/*   ScriptOutcome.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 14:17:06 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 15:47:09 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/26 13:42:07 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/26 16:38:40 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RequestHeader.hpp"
+#pragma once
+
+#include "Outcome.hpp"
+
+#include <string>
 
 namespace ws
 {
-    RequestHeader::RequestHeader() :
-        method(Method::Get),
-        uri(),
-        host(),
-        length(0),
-        cookies(),
-        header_fields()
-    {}
+    class ScriptOutcome : public Outcome
+    {
+        std::string _exec;
+        ft::Str     _file;
+
+    public:
+        ScriptOutcome(ft::Str exec, ft::Str file);
+
+        bool try_respond(Responding& responding, const RequestHeader& request) const;
+    };
 }

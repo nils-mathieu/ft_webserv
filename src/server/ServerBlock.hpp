@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:46:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 23:49:28 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 16:38:29 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Scope.hpp"
 
 #include <vector>
+#include <map>
 
 namespace ws
 {
@@ -24,11 +25,13 @@ namespace ws
     {
     public:
         /// @brief A label for this server block.
-        ft::Str                 label;
+        ft::Str                     label;
         /// @brief The address that this server block is listening for.
-        SocketAddress           address;
+        SocketAddress               address;
         /// @brief The hosts allowed for this server.
-        std::vector<ft::Str>    hosts;
+        std::vector<ft::Str>        hosts;
+        /// @brief The registered CGIs.
+        std::map<ft::Str, ft::Str>  cgis;
 
     public:
         // ==============

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 14:13:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 10:59:22 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 15:47:05 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "http/Method.hpp"
 
 #include <map>
+#include <vector>
 
 namespace ws
 {
@@ -33,6 +34,8 @@ namespace ws
         size_t                              length;
         /// @brief The cookies.
         std::map<std::string, std::string>  cookies;
+
+        std::vector< std::pair<std::string, std::string> > header_fields;
 
         RequestHeader();
     };

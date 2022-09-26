@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 12:21:25 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 16:39:14 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,24 @@ namespace ws
                     if (!parser.next_string(server_block.hosts.back()))
                         parser.throw_parsing_error("expected a string");
                     parser.assert_line_empty();
+                }
+                else if (directive == "cgi")
+                {
+                    ft::Str extension;
+                    ft::Str executed;
+
+                    if (!parser.next_string(extension))
+                        parser.throw_parsing_error("expected a string");
+
+                    if (extension.empty() || extension[0] != '.')
+                        parser.throw_parsing_error("extension must start with `.`");
+                    if (extension.size() == 1)
+                        parser.throw_parsing_error("extension cannot be empty");
+
+                    if (!parser.next_string(executed))
+                        parser.throw_parsing_error("expected a string");
+
+                    server_block.cgis[extension] = executed;
                 }
                 else if (directive == "}")
                 {
