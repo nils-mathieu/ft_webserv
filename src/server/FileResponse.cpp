@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 21:10:55 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 15:45:51 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 09:40:43 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ namespace ws
             this->_sent = 0;
             this->_init = this->_stream.readsome((char*)this->_buf, 4096);
 
-            if (this->_stream.eof())
+            if (this->_stream.eof() || this->_init == 0)
                 return (false);
         }
 

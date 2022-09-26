@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 21:14:49 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 09:22:43 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ namespace ws
         {
             if (directive == "method")
             {
-                bool add;
+                bool add = false;
                 if (parser.get_char('-'))
                     add = false;
                 else if (parser.get_char('+'))
@@ -141,7 +141,7 @@ namespace ws
             else if (directive == "catch")
             {
                 ft::Str     word;
-                uint32_t    code;
+                uint32_t    code = 0;
 
                 parser.next_word(word);
                 if (word.empty())
