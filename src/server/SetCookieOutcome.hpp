@@ -1,24 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RequestHeader.cpp                                  :+:      :+:    :+:   */
+/*   SetCookieOutcome.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/23 14:17:06 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 10:59:31 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/26 11:29:04 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/26 11:34:22 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RequestHeader.hpp"
+#pragma once
+
+#include "Outcome.hpp"
 
 namespace ws
 {
-    RequestHeader::RequestHeader() :
-        method(Method::Get),
-        uri(),
-        host(),
-        length(0),
-        cookies()
-    {}
+    class SetCookieOutcome : public Outcome
+    {
+        ft::Str _name;
+        ft::Str _value;
+
+    public:
+        SetCookieOutcome(ft::Str name, ft::Str value);
+
+        bool try_respond(Responding& responding, const RequestHeader& request) const;
+    };
 }

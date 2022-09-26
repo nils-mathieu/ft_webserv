@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 09:37:12 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 12:20:38 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ namespace ws
         _config(config),
         _address(address),
         _header(),
-        _responding()
+        _responding(),
+        _sent_header_fields(0)
     {
         ft::log::info() << " 📦 packet recieved at " << address << std::endl;
     }
@@ -90,6 +91,42 @@ namespace ws
                 return (Connection::Close);
             }
         }
+        else if (key == "Cookie")
+        {
+            ft::Str name;
+            ft::Str val;
+
+            size_t begin = 0;
+            for (size_t i = 0; i < value.size(); i++)
+            {
+                if (value[i] == '=')
+                {
+                    name = value.slice(begin, i);
+                    begin = i + 1;
+                }
+                else if (value[i] == ';')
+                {
+                    val = value.slice(begin, i);
+                    begin = i + 1;
+                    ft::log::trace()
+                        << ft::log::Color::Blue
+                        << ft::log::Color::Dim
+                        << "      cookie " << name << "=" << val
+                        << ft::log::Color::Reset
+                        << std::endl;
+                    this->_header.cookies[std::string((char*)name.data(), name.size())] = std::string((char*)val.data(), val.size());
+                }
+            }
+            val = value.slice(begin, value.size());
+            ft::log::trace()
+                << ft::log::Color::Blue
+                << ft::log::Color::Dim
+                << "      cookie " << name << "=" << val
+                << ft::log::Color::Reset
+                << std::endl;
+            this->_header.cookies[std::string((char*)name.data(), name.size())] = std::string((char*)val.data(), val.size());
+        }
+
         return (Connection::Continue);
     }
 
@@ -219,10 +256,15 @@ namespace ws
         ft::log::info()
             << "   📡 "
             << ft::log::Color::Green
+            << ft::log::Color::Bold
             << this->_responding.status.code
             << " "
+            << ft::log::Color::Reset
+            << ft::log::Color::Green
             << ft::log::Color::Dim
+            << "("
             << this->_responding.status.name()
+            << ")"
             << ft::log::Color::Reset
             << std::endl;
 
@@ -231,7 +273,17 @@ namespace ws
 
     bool ServerConnection::send_next_header(std::string& key, std::string& value)
     {
-        return this->_responding.get_response()->next_header_field(key, value);
+        if (this->_sent_header_fields < this->_responding.header_fields.size())
+        {
+            key = this->_responding.header_fields[this->_sent_header_fields].first;
+            value = this->_responding.header_fields[this->_sent_header_fields].second;
+            this->_sent_header_fields++;
+            return (true);
+        }
+        else
+        {
+            return this->_responding.get_response()->next_header_field(key, value);
+        }
     }
 
     Connection::Flow ServerConnection::send_more_body()
@@ -239,11 +291,8 @@ namespace ws
         if (this->_responding.get_response()->send_more_body_through(*this))
             return (Connection::Continue);
 
-        ft::log::info()
-            << ft::log::Color::Bold
-            << ft::log::Color::Green
+        ft::log::trace()
             << "      upload done!"
-            << ft::log::Color::Reset
             << std::endl << std::endl;
         return (Connection::Close);
     }

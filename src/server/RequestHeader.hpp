@@ -6,13 +6,15 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 14:13:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:06:22 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 10:59:22 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "http/Method.hpp"
+
+#include <map>
 
 namespace ws
 {
@@ -21,14 +23,16 @@ namespace ws
     struct RequestHeader
     {
         /// @brief The HTTP method used for the request.
-        Method          method;
+        Method                              method;
         /// @brief The request URI.
-        std::string     uri;
+        std::string                         uri;
         /// @brief The value of the `Host` header. An empty value is used when
         /// that key is not present.
-        std::string     host;
+        std::string                         host;
         /// @brief The length, if any, of the request body.
-        size_t          length;
+        size_t                              length;
+        /// @brief The cookies.
+        std::map<std::string, std::string>  cookies;
 
         RequestHeader();
     };

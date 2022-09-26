@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 11:51:15 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 14:59:51 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 12:22:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ namespace ws
 "   </style>\n"
 "   <body>\n"
 "       <div id=\"container\">\n"
-"           <h1>" << code.name() << " (" << code.code << ")" << "</h1>\n"
+"           <h1>" << code.code << " (" << code.name() << ")" << "</h1>\n"
 "       </div>\n"
 "   </body>\n"
 "</html>\n";

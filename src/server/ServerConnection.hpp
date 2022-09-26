@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:51:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:05:49 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:43:10 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ namespace ws
 
         /// @brief The state that's kept around when processing the request.
         Responding      _responding;
+
+        size_t          _sent_header_fields;
 
     public:
         ServerConnection(

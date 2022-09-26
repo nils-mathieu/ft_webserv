@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 10:01:53 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 12:21:25 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include "server/RedirectOutcome.hpp"
 #include "server/DownloadOutcome.hpp"
 #include "server/DeleteOutcome.hpp"
+#include "server/CookieScope.hpp"
+#include "server/SetCookieOutcome.hpp"
 
 #include <iostream>
 #include <ctype.h>
@@ -225,6 +227,35 @@ namespace ws
                 parser.assert_line_empty();
 
                 parse_into_scope(*scope.children.back(), parser);
+            }
+            else if (directive == "with-cookie")
+            {
+                if (!scope.location.empty() && scope.location.last() != '/')
+                    parser.throw_parsing_error("a file-scope cannot have children");
+                ft::Str name;
+                ft::Str value;
+                if (!parser.next_string(name))
+                    parser.throw_parsing_error("expected a string");
+                if (!parser.get_char('='))
+                    parser.throw_parsing_error("expected `=`");
+                if (!parser.next_string(value))
+                    parser.throw_parsing_error("expected a string");
+                if (!parser.get_char('{'))
+                    parser.throw_parsing_error("expected `{`");
+                parser.assert_line_empty();
+                scope.children.push_back(new CookieScope(name, value));
+                parse_into_scope(*scope.children.back(), parser);
+            }
+            else if (directive == "set-cookie")
+            {
+                ft::Str name;
+                ft::Str value;
+
+                if (!parser.next_string(name))
+                    parser.throw_parsing_error("expected a string");
+                if (!parser.next_string(value))
+                    parser.throw_parsing_error("expected a string");
+                scope.outcomes.push_back(new SetCookieOutcome(name, value));
             }
             else
                 return (false);

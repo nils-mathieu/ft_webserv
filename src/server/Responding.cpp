@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 05:58:03 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:58:31 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:32:50 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ namespace ws
         status(StatusCode::Ok),
         location("/"),
         methods(Methods::All),
-        root(ft::make_str("./"))
+        root(ft::make_str("./")),
+        header_fields()
     {}
 
     Responding::~Responding()

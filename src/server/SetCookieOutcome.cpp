@@ -1,42 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RedirectOutcome.cpp                                :+:      :+:    :+:   */
+/*   SetCookieOutcome.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/25 17:30:34 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 11:54:21 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/26 11:34:30 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/26 12:04:58 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RedirectOutcome.hpp"
+#include "SetCookieOutcome.hpp"
 #include "ft/log.hpp"
-#include "RedirectResponse.hpp"
 #include "ft/Color.hpp"
+
+#include <utility>
 
 namespace ws
 {
-    RedirectOutcome::RedirectOutcome(ft::Str location) :
-        _location(location)
+    SetCookieOutcome::SetCookieOutcome(ft::Str name, ft::Str value) :
+        _name(name),
+        _value(value)
     {}
 
-    bool RedirectOutcome::try_respond(Responding& responding, const RequestHeader& request) const
+    bool SetCookieOutcome::try_respond(Responding& responding, const RequestHeader& request) const
     {
         (void)request;
+        std::string s;
+        s.append((char*)this->_name.data(), this->_name.size());
+        s.push_back('=');
+        s.append((char*)this->_value.data(), this->_value.size());
+        responding.header_fields.push_back(std::make_pair("Set-Cookie", s));
 
         ft::log::trace()
             << "        outcome `"
             << ft::log::Color::Yellow
-            << "redirect "
+            << "set-cookie "
             << ft::log::Color::Dim
-            << this->_location
+            << this->_name
+            << "="
+            << this->_value
             << ft::log::Color::Reset
-            << "`: success!"
+            << ": success!"
             << std::endl;
 
-        responding.status = StatusCode::Found;
-        responding.set_response(new RedirectResponse(this->_location));
-        return (true);
+        return (false);
     }
 }

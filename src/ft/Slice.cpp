@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:13 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 02:21:30 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:06:50 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,16 @@ namespace ft
     }
 
     bool operator!=(Str a, const char* str)
+    {
+        return !(a == str);
+    }
+
+    bool operator==(Str a, const std::string& str)
+    {
+        return (a == str.c_str());
+    }
+
+    bool operator!=(Str a, const std::string& str)
     {
         return !(a == str);
     }

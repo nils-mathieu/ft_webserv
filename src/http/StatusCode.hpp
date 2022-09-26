@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:32:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:44:49 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:11:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ namespace ws
             TemporaryRedirect = 307,
 
             BadRequest = 400,
+            Unauthorized = 401,
             NotFound = 404,
             MethodNotAllowed = 405,
             Conflict = 409,

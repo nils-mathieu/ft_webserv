@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:23:56 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:02:03 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ namespace ws
 
     public:
         Scope();
-        ~Scope();
+        virtual ~Scope();
 
         /// @brief Tries to process the provided request.
         ///
@@ -57,7 +57,7 @@ namespace ws
         /// @param response The response that we are generating.
         ///
         /// @returns Whether the request could be processed and responded to.
-        bool    try_respond(
+        virtual bool    try_respond(
             const RequestHeader& request,
             Responding& responding
         ) const;

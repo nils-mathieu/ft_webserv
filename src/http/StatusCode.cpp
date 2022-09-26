@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:45:07 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:11:44 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ namespace ws
         case StatusCode::Found: return "Found";
         case StatusCode::TemporaryRedirect: return "Temporary Redirect";
         case StatusCode::BadRequest: return "Bad Request";
+        case StatusCode::Unauthorized: return "Unauthorized";
         case StatusCode::NotFound: return "Not Found";
         case StatusCode::MethodNotAllowed: return "Method Not Allowed";
         case StatusCode::Conflict: return "Conflict";

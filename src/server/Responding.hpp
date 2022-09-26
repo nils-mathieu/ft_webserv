@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 05:57:01 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 18:58:29 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:38:56 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include "BodyReciever.hpp"
 
 #include <string>
+#include <utility>
+#include <vector>
 
 namespace ws
 {
@@ -38,6 +40,8 @@ namespace ws
         Methods     methods;
         /// @brief The current root.
         ft::Str     root;
+
+        std::vector< std::pair<std::string, std::string> >   header_fields;
 
     public:
         Responding();

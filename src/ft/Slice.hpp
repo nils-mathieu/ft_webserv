@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:47:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 07:45:45 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/26 11:07:08 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 #include <stddef.h>
 #include <algorithm>
 #include <ostream>
-#include <iostream>
 #include <limits>
+#include <string>
 
 namespace ft
 {
@@ -342,6 +342,8 @@ namespace ft
 
     bool            operator==(Str a, const char *str);
     bool            operator!=(Str a, const char *str);
+    bool            operator==(Str a, const std::string& str);
+    bool            operator!=(Str a, const std::string& str);
 
     std::ostream&   operator<<(std::ostream& s, Str other);
 }
