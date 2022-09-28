@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 23:19:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 04:25:00 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:39:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,8 @@ namespace ft
         if (available >= additional)
         {
             // That would be enough! We can avoid a reallocation.
-            memmove(this->_data, this->_data + this->_consumed, this->_init - this->_consumed);
+            memmove(this->_data, this->_data + this->_consumed, this->_consumed);
+            this->_init -= this->_consumed;
             this->_consumed = 0;
             return;
         }
