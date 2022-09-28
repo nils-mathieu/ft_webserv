@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 02:33:48 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 11:11:44 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 12:55:00 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ namespace ws
         case StatusCode::MethodNotAllowed: return "Method Not Allowed";
         case StatusCode::Conflict: return "Conflict";
         case StatusCode::LengthRequired: return "Length Required";
+        case StatusCode::PayloadTooLarge: return "Payload Too Large";
         case StatusCode::InternalServerError: return "Internal Server Error";
         default: return (0);
         }

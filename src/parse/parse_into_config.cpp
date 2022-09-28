@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 13:25:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 16:39:14 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:13:27 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "server/DeleteOutcome.hpp"
 #include "server/CookieScope.hpp"
 #include "server/SetCookieOutcome.hpp"
+#include "server/SetPayloadLengthOutcome.hpp"
 
 #include <iostream>
 #include <ctype.h>
@@ -256,6 +257,19 @@ namespace ws
                 if (!parser.next_string(value))
                     parser.throw_parsing_error("expected a string");
                 scope.outcomes.push_back(new SetCookieOutcome(name, value));
+            }
+            else if (directive == "payload-max-length")
+            {
+                ft::Str word;
+                size_t  max_length;
+
+                parser.next_word(word);
+                if (word.empty())
+                    parser.throw_parsing_error("expected a size");
+                if (!ft::parse_str(word, max_length))
+                    parser.throw_parsing_error("invalid size");
+
+                scope.outcomes.push_back(new SetPayloadLengthOutcome(max_length));
             }
             else
                 return (false);

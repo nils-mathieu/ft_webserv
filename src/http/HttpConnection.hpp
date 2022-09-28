@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:40:31 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/24 21:55:35 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 12:50:00 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,6 @@ namespace ws
         /// 11 - sending the header
         /// 12 - sending the body
         int             _state;
-
-        /// @brief The size of the request so far.
-        size_t          _size;
 
         /// State 6, 7, 8:
         ///  The index of the ':' character in a key-value pair.

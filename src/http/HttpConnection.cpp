@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 22:54:59 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:48:28 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 12:50:09 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ namespace ws
         Connection(raw_fd),
         _data(1024),
         _state(0),
-        _size(0),
         _colon_position(0)
     {}
 
@@ -94,7 +93,6 @@ namespace ws
         this->_data.reserve(512);
         size_t count = this->read_some(this->_data.spare_slice());
         this->_data.assume_filled(count);
-        this->_size += count;
 
         size_t available = this->_data.available();
 

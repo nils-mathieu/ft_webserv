@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:51:36 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 11:43:10 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:12:20 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ namespace ws
         Connection::Flow    parsed_header_field(ft::Str key, ft::Str value);
         Connection::Flow    parsed_header();
         Connection::Flow    recieved_more_body(ft::Str body_part);
+        Connection::Flow    parsed_some(size_t payload_size_so_far);
 
         StatusCode          send_status_code();
         bool                send_next_header(std::string& key, std::string& value);
