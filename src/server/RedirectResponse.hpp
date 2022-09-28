@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 17:33:03 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 17:37:42 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:54:59 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ namespace ws
     public:
         RedirectResponse(ft::Str url);
 
-        bool next_header_field(std::string& key, std::string& value);
-        bool send_more_body_through(Connection& conn);
+        bool                next_header_field(std::string& key, std::string& value);
     };
 }

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 21:10:55 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 09:40:43 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 14:26:55 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "ft/GenericException.hpp"
 #include "ft/Color.hpp"
 #include "ft/Slice.hpp"
+#include "ft/log.hpp"
 
 #include <sstream>
 
@@ -25,6 +26,7 @@ namespace ws
         _sent(0),
         _init(0),
         _buf(),
+        _sent_so_far(0),
         _sent_content_length(false)
     {
         this->_stream.open(path, std::ifstream::ate | std::ifstream::binary | std::ifstream::in);
@@ -68,7 +70,7 @@ namespace ws
         return (true);
     }
 
-    bool FileResponse::send_more_body_through(Connection& connection)
+    Connection::Flow FileResponse::send_more_body_through(Connection& connection)
     {
         if (this->_sent == this->_init)
         {
@@ -76,11 +78,20 @@ namespace ws
             this->_init = this->_stream.readsome((char*)this->_buf, 4096);
 
             if (this->_stream.eof() || this->_init == 0)
-                return (false);
+                return (Connection::Close);
         }
 
-        this->_sent += connection.send_some(ft::Str(this->_buf + this->_sent, this->_init - this->_sent));
+        size_t sent = connection.send_some(ft::Str(this->_buf + this->_sent, this->_init - this->_sent));
+        this->_sent += sent;
+        this->_sent_so_far += sent;
 
-        return (true);
+        ft::log::details()
+            << ft::log::Color::Dim
+            << "sending file: "
+            << this->_sent_so_far << "/" << this->_length << " bytes (" << (100.0 * (double)this->_sent_so_far / (double)this->_length) << "%)"
+            << ft::log::Color::Reset
+            << std::endl;
+
+        return (Connection::Continue);
     }
 }

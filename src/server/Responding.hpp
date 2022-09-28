@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 05:57:01 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 13:12:04 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:51:14 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "Methods.hpp"
 #include "ft/Slice.hpp"
 #include "Response.hpp"
-#include "BodyReciever.hpp"
 
 #include <string>
 #include <utility>
@@ -27,8 +26,6 @@ namespace ws
     {
         /// @brief The response that will actually be sent.
         Response*       _response;
-        /// @brief The reciever responsible for using the request body.
-        BodyReciever*   _reciever;
 
     public:
         /// @brief The current status code.
@@ -49,8 +46,5 @@ namespace ws
 
         void            set_response(Response* response);
         Response*       get_response();
-
-        void            set_reciever(BodyReciever* response);
-        BodyReciever*   get_reciever();
     };
 }

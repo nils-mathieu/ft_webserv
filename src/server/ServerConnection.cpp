@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 13:12:30 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 14:20:31 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,22 +233,6 @@ namespace ws
             this->_responding.status = StatusCode::InternalServerError;
         }
 
-        if (this->_responding.get_reciever())
-            return (Connection::Continue);
-        else
-            return (Connection::Close);
-    }
-
-    Connection::Flow ServerConnection::recieved_more_body(ft::Str body_part)
-    {
-        // The reciever shouldn't be null because we checked in `parsed_header`
-        // that it wasn't. The connection would've been closed already if it
-        // wasn't the case.
-        return (this->_responding.get_reciever()->recieve_body(body_part, this->_header));
-    }
-
-    StatusCode ServerConnection::send_status_code()
-    {
         if (!this->_responding.get_response())
         {
             ft::log::trace()
@@ -259,6 +243,19 @@ namespace ws
             this->_responding.set_response(new StringResponse(contents));
         }
 
+        if (this->_header.length == 0)
+            return (Connection::Close);
+        else
+            return (Connection::Continue);
+    }
+
+    Connection::Flow ServerConnection::recieved_more_body(ft::Str body_part)
+    {
+        return (this->_responding.get_response()->recieve_body(body_part, this->_header));
+    }
+
+    StatusCode ServerConnection::send_status_code()
+    {
         ft::log::info()
             << "   📡 "
             << ft::log::Color::Green
@@ -294,7 +291,7 @@ namespace ws
 
     Connection::Flow ServerConnection::send_more_body()
     {
-        if (this->_responding.get_response()->send_more_body_through(*this))
+        if (this->_responding.get_response()->send_more_body_through(*this) == Connection::Continue)
             return (Connection::Continue);
 
         ft::log::trace()

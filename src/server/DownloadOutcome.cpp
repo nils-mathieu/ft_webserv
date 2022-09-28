@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 18:18:51 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 19:58:32 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 13:52:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ namespace ws
             << std::endl;
 
         responding.status = StatusCode::Ok;
-        responding.set_reciever(new DownloadBody(root.c_str()));
+        responding.set_response(new DownloadBody(root.c_str()));
         return (true);
     }
 }

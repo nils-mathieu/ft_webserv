@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 08:25:11 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 16:04:41 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 14:25:54 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "ft/GenericException.hpp"
 #include "ft/Color.hpp"
 #include "ft/Slice.hpp"
+#include "ft/log.hpp"
+#include "ft/Color.hpp"
 
 namespace ws
 {
@@ -34,9 +36,20 @@ namespace ws
         return (true);
     }
 
-    bool StringResponse::send_more_body_through(Connection& connection)
+    Connection::Flow StringResponse::send_more_body_through(Connection& connection)
     {
         this->_sent += connection.send_some(ft::Str((uint8_t*)this->_page.data() + this->_sent, this->_page.size() - this->_sent));
-        return (this->_sent != this->_page.size());
+
+        ft::log::details()
+            << ft::log::Color::Dim
+            << "sending string: "
+            << this->_sent << "/" << this->_page.size() << " bytes (" << (100.0 * (double)this->_sent / (double)this->_page.size()) << "%)"
+            << ft::log::Color::Reset
+            << std::endl;
+
+        if (this->_sent != this->_page.size())
+            return (Connection::Continue);
+        else
+            return (Connection::Close);
     }
 }
