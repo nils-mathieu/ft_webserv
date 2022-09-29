@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 14:52:35 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 20:10:09 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 21:49:26 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include <iostream>
 #include <string.h>
 #include <unistd.h>
+
+#define READ_BUF_SIZE 8192
 
 namespace ws
 {
@@ -237,12 +239,12 @@ namespace ws
 
     void CgiResponse::prepare_response()
     {
-        char    buf2[4096];
+        char    buf2[READ_BUF_SIZE];
 
         // Finish reading the output of the CGI.
         while (true)
         {
-            ssize_t count = read(this->_output_fd, buf2, 4096);
+            ssize_t count = read(this->_output_fd, buf2, READ_BUF_SIZE);
             if (count < 0)
                 throw ft::OsException("failed to read from the pipe");
             if (count == 0)
@@ -303,7 +305,7 @@ namespace ws
 
     Connection::Flow CgiResponse::recieve_body(ft::Str body_part, const RequestHeader& header)
     {
-        char    buf2[4096]; // This is so dumb, so many copies.
+        char    buf2[READ_BUF_SIZE]; // This is so dumb, so many copies.
 
         // ============================================
         //  Send The Body Part To The Executing Script
@@ -328,7 +330,7 @@ namespace ws
         //  Read The Data Back
         // ====================
 
-        ssize_t count = read(this->_output_fd, buf2, 4096);
+        ssize_t count = read(this->_output_fd, buf2, READ_BUF_SIZE);
         if (count < 0)
             throw ft::OsException("failed to read from the pipe");
 

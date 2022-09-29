@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:50:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 15:15:36 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 21:49:13 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,13 @@ namespace ws
         size_t  original_location_size = responding.location.size();
         Methods original_methods = responding.methods;
         ft::Str original_root = responding.root;
+        size_t  original_cgi_size = responding.cgis.size();
 
         responding.location.append((char*)this->location.data(), this->location.size());
         responding.methods |= this->added_methods;
         responding.methods &= ~this->removed_methods;
+        for (size_t i = 0; i < this->cgis.size(); i++)
+            responding.cgis.push_back(this->cgis[i]);
 
         if (!this->root.empty())
             responding.root = this->root;
@@ -74,6 +77,7 @@ namespace ws
             responding.methods = original_methods;
             responding.location.resize(original_location_size);
             responding.root = original_root;
+            responding.cgis.resize(original_cgi_size);
             return (false);
         }
 
@@ -90,6 +94,7 @@ namespace ws
                     responding.location.resize(original_location_size);
                     responding.methods = original_methods;
                     responding.root = original_root;
+                    responding.cgis.resize(original_cgi_size);
                     return (true);
                 }
 
@@ -110,6 +115,7 @@ namespace ws
             responding.methods = original_methods;
             responding.location.resize(original_location_size);
             responding.root = original_root;
+            responding.cgis.resize(original_cgi_size);
             return (false);
         }
 
@@ -142,6 +148,7 @@ namespace ws
             responding.methods = original_methods;
             responding.location.resize(original_location_size);
             responding.root = original_root;
+            responding.cgis.resize(original_cgi_size);
             return (false);
         }
 
@@ -156,6 +163,7 @@ namespace ws
                     responding.methods = original_methods;
                     responding.location.resize(original_location_size);
                     responding.root = original_root;
+                    responding.cgis.resize(original_cgi_size);
                     return (true);
                 }
 
@@ -170,6 +178,7 @@ namespace ws
         responding.methods = original_methods;
         responding.location.resize(original_location_size);
         responding.root = original_root;
+        responding.cgis.resize(original_cgi_size);
         return (false);
     }
 }
