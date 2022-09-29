@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 14:52:35 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 21:49:26 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 22:01:07 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,10 +260,10 @@ namespace ws
 
         ft::Str key;
         ft::Str value;
-        size_t  start = 0;
         size_t  i = 0;
         while (i < this->_buf.size())
         {
+            size_t  start = i;
             if (this->_buf[i] == '\r')
             {
                 i++;
@@ -285,7 +285,7 @@ namespace ws
             {
                 uint32_t code;
                 if (!ft::parse_str(value, code))
-                    throw ft::GenericException("unexpected CGI behavior");
+                    throw ft::GenericException("unexpected CGI behavior: can't parse the provided status");
                 this->_new_status = StatusCode(code);
             }
             else

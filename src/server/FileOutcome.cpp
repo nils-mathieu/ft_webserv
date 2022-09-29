@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:20:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 13:10:32 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 21:50:54 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,23 @@ namespace ws
         if (stat(s, &st) != 0)
             return (false);
         return (st.st_mode & S_IFREG);
+    }
+
+    static bool has_extention(const char* s, ft::Str ext)
+    {
+        size_t len = strlen(s);
+        if (len <= ext.size())
+            return (false);
+        len -= ext.size();
+
+        size_t i = 0;
+        while (i < ext.size())
+        {
+            if (s[len + i] != ext[i])
+                return (false);
+            i++;
+        }
+        return (true);
     }
 
     bool FileOutcome::try_respond(Responding& responding, const RequestHeader& request) const
@@ -70,15 +87,45 @@ namespace ws
         if (!this->_script.empty())
         {
             ft::log::trace()
-                << std::endl
                 << ft::log::Color::Dim
-                << "          using CGI: "
+                << "          using CGI `"
+                << ft::log::Color::Yellow
                 << this->_script
+                << ft::log::Color::Reset << ft::log::Color::Dim
+                << "`"
                 << ft::log::Color::Reset
                 << std::endl;
 
             responding.set_response(new CgiResponse(this->_script.c_str(), root.c_str(), responding, request));
             return (true);
+        }
+        else
+        {
+            size_t i = responding.cgis.size();
+            while (i-- != 0)
+            {
+                ft::Str extension = responding.cgis[i].first;
+                ft::Str script = responding.cgis[i].second;
+
+                if (has_extention(root.c_str(), extension))
+                {
+                    ft::log::trace()
+                        << ft::log::Color::Dim
+                        << "          using CGI `"
+                        << ft::log::Color::Yellow
+                        << script
+                        << ft::log::Color::Reset << ft::log::Color::Dim
+                        << "`"
+                        << ft::log::Color::Reset
+                        << std::endl;
+
+                    std::string script_path((char*)script.data(), script.size());
+
+                    responding.status = StatusCode::Ok;
+                    responding.set_response(new CgiResponse(script_path.c_str(), root.c_str(), responding, request));
+                    return (true);
+                }
+            }
         }
 
         ft::log::trace()
