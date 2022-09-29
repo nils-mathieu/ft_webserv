@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 11:51:15 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 13:20:53 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 20:18:00 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ namespace ws
                 {
                     for (int i = (int)new_uri.size() - 2; i >= 0; i--)
                     {
-                    if (new_uri[i] == '/')
+                        if (new_uri[i] == '/')
                         {
                             new_uri_ref = ft::Str((uint8_t*)new_uri.data(), i + 1);
                             break;
@@ -160,6 +160,8 @@ namespace ws
                 else
                 {
                     new_uri.append(ent->d_name);
+                    if (ent->d_type == DT_DIR)
+                        new_uri.append("/");
                     new_uri_ref = ft::Str((uint8_t*)new_uri.data(), new_uri.size());
                 }
 
