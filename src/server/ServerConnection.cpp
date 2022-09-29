@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 14:20:31 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 17:38:15 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ namespace ws
         _config(config),
         _address(address),
         _header(),
-        _responding(),
+        _responding(address),
         _sent_header_fields(0)
     {
         ft::log::info() << " 📦 packet recieved at " << address << std::endl;
@@ -271,7 +271,7 @@ namespace ws
             << ft::log::Color::Reset
             << std::endl;
 
-        return (this->_responding.status);
+        return (this->_responding.get_response()->catch_status_code(this->_responding.status));
     }
 
     bool ServerConnection::send_next_header(std::string& key, std::string& value)

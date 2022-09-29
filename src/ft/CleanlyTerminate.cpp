@@ -1,33 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   FileOutcome.hpp                                    :+:      :+:    :+:   */
+/*   CleanlyTerminate.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/25 16:18:24 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 15:08:52 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/28 14:58:13 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/28 14:58:35 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "CleanlyTerminate.hpp"
 
-#include "ft/Slice.hpp"
-#include "Responding.hpp"
-#include "Outcome.hpp"
-
-#include <string>
-
-namespace ws
+namespace ft
 {
-    class FileOutcome : public Outcome
-    {
-        ft::Str     _file;
-        std::string _script;
-
-    public:
-        FileOutcome(ft::Str file, ft::Str script = ft::Str());
-
-        bool try_respond(Responding& responding, const RequestHeader& request) const;
-    };
+    CleanlyTerminate::CleanlyTerminate(int exit_code) :
+        exit_code(exit_code)
+    {}
 }

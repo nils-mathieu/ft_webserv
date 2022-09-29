@@ -6,12 +6,14 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 19:37:41 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 14:48:32 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 17:58:50 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft/OsException.hpp"
 #include "Connection.hpp"
+#include "ft/log.hpp"
+#include "ft/Color.hpp"
 
 #include <unistd.h>
 #include <iostream>
@@ -46,20 +48,28 @@ namespace ws
 
     bool Connection::poll(PollTypes types)
     {
-        if ((types & PollTypes::In) != 0 && !this->_reading_done)
+        if (types & PollTypes::HangedUp)
+        {
+            ft::log::error()
+                << ft::log::Color::Yellow
+                << "warning"
+                << ft::log::Color::Reset
+                << ": connection hanged up"
+                << std::endl;
+            return (true);
+        }
+        if (types & PollTypes::In && !this->_reading_done)
         {
             // New data is available for reading!
             if (this->can_read_more() == Connection::Close)
                 this->_reading_done = true;
         }
-        if ((types & PollTypes::Out) != 0 && !this->_writing_done)
+        if (types & PollTypes::Out && !this->_writing_done)
         {
             // Data can be sent!
             if (this->can_send_more() == Connection::Close)
                 this->_writing_done = true;
         }
-        if ((types & PollTypes::HangedUp) != 0)
-            return (true);
 
         return (this->_reading_done && this->_writing_done);
     }

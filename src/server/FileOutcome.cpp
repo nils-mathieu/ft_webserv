@@ -6,21 +6,23 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:20:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/25 21:21:40 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 13:10:32 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "FileOutcome.hpp"
 #include "ft/log.hpp"
 #include "ft/Color.hpp"
+#include "CgiResponse.hpp"
 #include "FileResponse.hpp"
 
 #include <sys/stat.h>
 
 namespace ws
 {
-    FileOutcome::FileOutcome(ft::Str file) :
-        _file(file)
+    FileOutcome::FileOutcome(ft::Str file, ft::Str script) :
+        _file(file),
+        _script((char*)script.data(), script.size())
     {}
 
     static bool regular_file_exists(const char* s)
@@ -44,6 +46,10 @@ namespace ws
             << ft::log::Color::Reset
             << "`: ";
 
+        // =====================
+        //  Some Initial Checks
+        // =====================
+
         std::string root = std::string((char*)responding.root.data(), responding.root.size());
         root.append((char*)this->_file.data(), this->_file.size());
 
@@ -59,6 +65,20 @@ namespace ws
 
             responding.status = StatusCode::NotFound;
             return (false);
+        }
+
+        if (!this->_script.empty())
+        {
+            ft::log::trace()
+                << std::endl
+                << ft::log::Color::Dim
+                << "          using CGI: "
+                << this->_script
+                << ft::log::Color::Reset
+                << std::endl;
+
+            responding.set_response(new CgiResponse(this->_script.c_str(), root.c_str(), responding, request));
+            return (true);
         }
 
         ft::log::trace()

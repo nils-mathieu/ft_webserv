@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 13:46:14 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 12:48:43 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 14:47:13 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ namespace ws
         SocketAddress               address;
         /// @brief The hosts allowed for this server.
         std::vector<ft::Str>        hosts;
-        /// @brief The registered CGIs.
-        std::map<ft::Str, ft::Str>  cgis;
 
     public:
         // ==============

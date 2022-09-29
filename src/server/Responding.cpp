@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 05:58:03 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 13:56:23 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 15:26:58 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 namespace ws
 {
-    Responding::Responding() :
+    Responding::Responding(SocketAddress server_address) :
         _response(0),
+        server_address(server_address),
         status(StatusCode::Ok),
         location("/"),
         methods(Methods::All),

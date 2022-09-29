@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 17:03:22 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 19:02:47 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 17:44:39 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "AsyncExecutor.hpp"
 
 #include <unistd.h>
+#include <iostream>
 #include <sys/epoll.h>
 
 namespace ws

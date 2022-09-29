@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 18:42:20 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 14:17:46 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 16:44:56 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ namespace ws
         (void)key;
         (void)value;
         return (false);
+    }
+
+    StatusCode Response::catch_status_code(StatusCode current)
+    {
+        return current;
     }
 
     Connection::Flow Response::send_more_body_through(Connection& conn)

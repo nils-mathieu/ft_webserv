@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 05:57:01 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 13:51:14 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 15:34:39 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Methods.hpp"
 #include "ft/Slice.hpp"
 #include "Response.hpp"
+#include "net/SocketAddress.hpp"
 
 #include <string>
 #include <utility>
@@ -28,6 +29,9 @@ namespace ws
         Response*       _response;
 
     public:
+        // Information about the server serving the request.
+        SocketAddress server_address;
+
         /// @brief The current status code.
         StatusCode  status;
 
@@ -38,9 +42,11 @@ namespace ws
         /// @brief The current root.
         ft::Str     root;
         std::vector< std::pair<std::string, std::string> >   header_fields;
+        /// @brief The registered CGIs so far.
+        std::vector< std::pair<ft::Str, ft::Str> >  cgis;
 
     public:
-        Responding();
+        Responding(SocketAddress server_address);
 
         ~Responding();
 

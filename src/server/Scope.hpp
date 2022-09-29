@@ -6,12 +6,13 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 12:41:43 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 13:05:59 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/28 15:15:37 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "ft/Slice.hpp"
 #include "Methods.hpp"
 #include "http/StatusCode.hpp"
 #include "Outcome.hpp"
@@ -42,6 +43,8 @@ namespace ws
         /// @brief The outcomes of this scope. The first matching outcome is
         /// used.
         std::vector<Outcome*>    outcomes;
+        /// @brief The registered CGIs for that scope.
+        std::vector< std::pair<ft::Str, ft::Str> >  cgis;
 
     public:
         Scope();

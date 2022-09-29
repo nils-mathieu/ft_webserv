@@ -1,31 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ScriptOutcome.hpp                                  :+:      :+:    :+:   */
+/*   CleanlyTerminate.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/26 13:42:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 16:38:40 by nmathieu         ###   ########.fr       */
+/*   Created: 2022/09/28 14:57:16 by nmathieu          #+#    #+#             */
+/*   Updated: 2022/09/28 14:58:12 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Outcome.hpp"
-
-#include <string>
-
-namespace ws
+namespace ft
 {
-    class ScriptOutcome : public Outcome
+    class CleanlyTerminate
     {
-        std::string _exec;
-        ft::Str     _file;
-
     public:
-        ScriptOutcome(ft::Str exec, ft::Str file);
+        int exit_code;
 
-        bool try_respond(Responding& responding, const RequestHeader& request) const;
+        CleanlyTerminate(int exit_code);
     };
 }

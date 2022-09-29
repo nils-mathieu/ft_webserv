@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 21:39:08 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/23 19:02:35 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 17:39:49 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ namespace ft
 
             if (sigaction(SIGINT, &act, 0) != 0)
                 throw OsException("failed to setup a SIGINT signal handler");
+            if (sigaction(SIGQUIT, &act, 0) != 0)
+                throw OsException("failed to setup a SIGQUIT signal handler");
+            if (sigaction(SIGTERM, &act, 0) != 0)
+                throw OsException("failed to setup a SIGTERM signal handler");
+            act.sa_handler = SIG_IGN;
+            if (sigaction(SIGPIPE, &act, 0) != 0)
+                throw OsException("failed to setup a SIGPIPE signal handler");
         }
 
         bool occured()

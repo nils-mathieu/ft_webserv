@@ -6,12 +6,14 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 23:19:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 13:39:35 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 19:44:27 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.hpp"
 #include "ParseBuf.hpp"
+
+#include <iostream>
 
 namespace ft
 {
@@ -62,6 +64,7 @@ namespace ft
         if (this->_cap == 0)
         {
             this->_data = this->_alloc.allocate(additional);
+            this->_cap = additional;
             return;
         }
 
@@ -79,7 +82,7 @@ namespace ft
         if (available >= additional)
         {
             // That would be enough! We can avoid a reallocation.
-            memmove(this->_data, this->_data + this->_consumed, this->_consumed);
+            memmove(this->_data, this->_data + this->_consumed, this->_init - this->_consumed);
             this->_init -= this->_consumed;
             this->_consumed = 0;
             return;

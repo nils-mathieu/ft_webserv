@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/26 12:32:12 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/29 19:45:57 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "ft/Color.hpp"
 #include "async/AsyncExecutor.hpp"
 #include "net/Socket.hpp"
+#include "ft/CleanlyTerminate.hpp"
 #include "server/RespondWithServer.hpp"
 
 #include <iomanip>
@@ -244,6 +245,8 @@ int fallible_main(int argc, char** argv)
     return (0);
 }
 
+#include "ft/ParseBuf.hpp"
+
 int main(int argc, char** argv)
 {
     // =========================
@@ -281,5 +284,9 @@ int main(int argc, char** argv)
             << std::endl;
 
         return (1);
+    }
+    catch (const ft::CleanlyTerminate& e)
+    {
+        return (e.exit_code);
     }
 }
