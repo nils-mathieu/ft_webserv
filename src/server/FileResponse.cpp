@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 21:10:55 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 14:26:55 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 20:22:47 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,26 @@
 #include "ft/Color.hpp"
 #include "ft/Slice.hpp"
 #include "ft/log.hpp"
+#include "http/mime.hpp"
 
 #include <sstream>
 
 namespace ws
 {
+    const char* get_ext(const char* s)
+    {
+        const char* t = s + strlen(s);
+
+        while (t-- > s)
+        {
+            if (*t == '/')
+                return (0);
+            if (*t == '.')
+                return (t);
+        }
+        return (0);
+    }
+
     FileResponse::FileResponse(const char* path) :
         _length(0),
         _stream(),
@@ -27,7 +42,8 @@ namespace ws
         _init(0),
         _buf(),
         _sent_so_far(0),
-        _sent_content_length(false)
+        _sent_headers(0),
+        _content_type(0)
     {
         this->_stream.open(path, std::ifstream::ate | std::ifstream::binary | std::ifstream::in);
 
@@ -57,17 +73,38 @@ namespace ws
                 << "`";
             throw ft::GenericException(s.str());
         }
+
+        this->_content_type = mime::get(get_ext(path));
     }
 
     bool FileResponse::next_header_field(std::string& key, std::string& value)
     {
-        if (this->_length == 0 || this->_sent_content_length)
-            return (false);
-        this->_sent_content_length = true;
-        key = "Content-Length";
-        uint8_t buf[32];
-        value = std::string((char*)buf, ft::write_int(this->_length, buf));
-        return (true);
+        while (true)
+        {
+            if (this->_sent_headers == 0)
+            {
+                this->_sent_headers = 1;
+                if (this->_length != 0)
+                {
+                    key = "Content-Length";
+                    uint8_t buf[32];
+                    value = std::string((char*)buf, ft::write_int(this->_length, buf));
+                    return (true);
+                }
+            }
+            else if (this->_sent_headers == 1)
+            {
+                this->_sent_headers = 2;
+                if (this->_content_type)
+                {
+                    key = "Content-Type";
+                    value = std::string(this->_content_type);
+                    return (true);
+                }
+            }
+            else
+                return (false);
+        }
     }
 
     Connection::Flow FileResponse::send_more_body_through(Connection& connection)

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 21:06:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/28 14:23:56 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 20:10:39 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ namespace ws
         size_t          _init;
         uint8_t         _buf[4096];
         size_t          _sent_so_far;
-        bool            _sent_content_length;
+        int             _sent_headers;
+        const char*     _content_type;
 
 
     public:

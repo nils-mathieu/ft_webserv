@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:41:07 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 19:45:57 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 20:05:40 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "net/Socket.hpp"
 #include "ft/CleanlyTerminate.hpp"
 #include "server/RespondWithServer.hpp"
+#include "http/mime.hpp"
 
 #include <iomanip>
 #include <iostream>
@@ -254,11 +255,14 @@ int main(int argc, char** argv)
     // =========================
     //  This state may be needed after the `fallible_main` function has
     //  returned. None of these function should ever throw exceptions.
-    ft::log::initialize();
-    ft::sigint::initialize();
+
 
     try
     {
+        ft::log::initialize();
+        ft::sigint::initialize();
+        ws::mime::initialize();
+
         return (fallible_main(argc, argv));
     }
     catch (const ft::Exception& exception)
