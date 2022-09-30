@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 17:38:15 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 19:16:02 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ namespace ws
             << ft::log::Color::Reset
             << std::endl;
 
+        this->_responding.set_response(new StringResponse(page::default_error(StatusCode::BadRequest)));
         this->_responding.status = StatusCode::BadRequest;
     }
 
@@ -70,6 +71,7 @@ namespace ws
                 << "'"
                 << ft::log::Color::Reset
                 << std::endl;
+            this->_responding.set_response(new StringResponse(page::default_error(StatusCode::BadRequest)));
             this->_responding.status = StatusCode::BadRequest;
             return Connection::Close;
         }
