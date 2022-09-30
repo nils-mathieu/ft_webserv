@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 21:56:39 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/30 19:16:02 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 19:38:16 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,19 @@ namespace ws
 
     Connection::Flow ServerConnection::parsed_uri(ft::Str uri)
     {
-        this->_header.uri = std::string((char*)uri.data(), uri.size());
+        ft::Str path;
+        ft::Str query;
+
+        // Find an eventual '?' character.
+        if (uri.split_once(path, query, '?'))
+        {
+            this->_header.uri = std::string((char*)path.data(), path.size());
+            this->_header.query = std::string((char*)query.data() + 1, query.size() - 1);
+        }
+        else
+        {
+            this->_header.uri = std::string((char*)uri.data(), uri.size());
+        }
         return Connection::Continue;
     }
 
@@ -137,7 +149,14 @@ namespace ws
             << ft::log::Color::Green
             << this->_header.method << " "
             << ft::log::Color::BrightYellow
-            << this->_header.uri
+            << this->_header.uri;
+        if (!this->_header.query.empty())
+        {
+            ft::log::info()
+               << ft::log::Color::Dim
+                << "?" << this->_header.query;
+        }
+        ft::log::info()
             << ft::log::Color::Reset
             << " for "
             << ft::log::Color::Dim

@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:20:42 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 21:50:54 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 19:25:09 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,14 @@ namespace ws
             return (false);
         }
 
+        ft::log::trace()
+            << "`"
+            << ft::log::Color::Yellow
+            << root
+            << ft::log::Color::Reset
+            << "` found!"
+            << std::endl;
+
         if (!this->_script.empty())
         {
             ft::log::trace()
@@ -127,14 +135,6 @@ namespace ws
                 }
             }
         }
-
-        ft::log::trace()
-            << "`"
-            << ft::log::Color::Yellow
-            << root
-            << ft::log::Color::Reset
-            << "` found!"
-            << std::endl;
 
         responding.status = StatusCode::Ok;
         responding.set_response(new FileResponse(root.c_str()));

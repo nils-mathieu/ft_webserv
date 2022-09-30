@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/23 14:13:37 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 15:19:44 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 19:17:41 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ namespace ws
         Method                              method;
         /// @brief The request URI.
         std::string                         uri;
+        /// @brief The query string.
+        std::string                         query;
         /// @brief The value of the `Host` header. An empty value is used when
         /// that key is not present.
         std::string                         host;

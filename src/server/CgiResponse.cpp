@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/28 14:52:35 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 22:01:07 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 19:38:19 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,16 +74,6 @@ namespace ws
             0
         };
 
-        ft::Str query_str;
-        for (size_t i = 0; i < request.uri.size(); i++)
-        {
-            if (request.uri[i] == '?')
-            {
-                query_str = ft::Str((uint8_t*)request.uri.data() + i + 1, (uint8_t*)request.uri.data() + request.uri.size());
-                break;
-            }
-        }
-
         uint8_t buf[32];
 
         std::string content_length;
@@ -100,7 +90,7 @@ namespace ws
         script_name.append(file);
         std::string query_string;
         query_string.append("QUERY_STRING=");
-        query_string.append((char*)query_str.data(), query_str.size());
+        query_string.append(request.query.c_str());
         std::string request_method;
         request_method.append("REQUEST_METHOD=");
         request_method.append(request.method.name());
