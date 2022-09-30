@@ -6,7 +6,7 @@
 /*   By: nmathieu <nmathieu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/25 16:25:05 by nmathieu          #+#    #+#             */
-/*   Updated: 2022/09/29 21:41:21 by nmathieu         ###   ########.fr       */
+/*   Updated: 2022/09/30 22:17:01 by nmathieu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ namespace ws
 
     static bool has_extention(const char* s, ft::Str ext)
     {
+        const char* t = strrchr(s, '/');
+        if (t)
+            s = t + 1;
         size_t len = strlen(s);
         if (len <= ext.size())
             return (false);
