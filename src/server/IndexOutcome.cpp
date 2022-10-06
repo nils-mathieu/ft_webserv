@@ -40,7 +40,7 @@ namespace ws
         std::string root = std::string((char*)responding.root.data(), responding.root.size());
         root.append(request.uri.c_str() + responding.location.size());
 
-        if (*root.rend() == '/')
+        if (*root.rbegin() != '/')
         {
             ft::log::trace()
                 << ft::log::Color::Red
