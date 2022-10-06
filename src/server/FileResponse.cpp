@@ -74,7 +74,9 @@ namespace ws
             throw ft::GenericException(s.str());
         }
 
-        this->_content_type = mime::get(get_ext(path));
+        const char* ext = get_ext(path);
+        if (ext)
+            this->_content_type = mime::get(ext);
     }
 
     bool FileResponse::next_header_field(std::string& key, std::string& value)
